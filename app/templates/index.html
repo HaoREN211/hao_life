@@ -1,0 +1,27 @@
+{% extends 'bootstrap/base.html' %}
+
+    {% block scripts %}
+        {{ super() }}
+        <script src="{{ url_for('static',filename='js/echarts.min.js') }}"></script>
+        <script src="{{ url_for('static',filename='js/tableau/consume_by_type.js') }}"></script>
+    {% endblock %}
+
+    {% block head %}
+        {% if title %}
+            <title>{{ title }}</title>
+        {% endif %}
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    {% endblock %}
+
+    {% block content %}
+        <link rel="stylesheet" href="{{ url_for('static',filename='css/hao_css.css') }}"/>
+        <div class="hao-background-div" style="background-image: url({{ url_for('static', filename='background.jpg') }});">
+{#            <div class="hao-tableau-div hao-tableau-div-top-left" id="consume_by_type">#}
+{#            </div>#}
+            <div class="hao-tableau-div-top-left hao-tableau-div-transparent" >
+                <div class="hao-tableau-div" id="consume_by_type"></div>
+            </div>
+        </div>
+
+    {% endblock %}

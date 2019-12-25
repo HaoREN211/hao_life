@@ -1,0 +1,32 @@
+.hao-background-div {
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0
+}
+
+.hao-tableau-div {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+}
+
+.hao-tableau-div-top-left {
+    position: relative;
+    top: 2%;
+    left: 1%;
+    width: 20%;
+    height: 30%;
+}
+
+.hao-tableau-div-transparent {
+    border: 1px solid darkgrey;
+    background: rgba(0, 36, 139, 0.1);
+}
