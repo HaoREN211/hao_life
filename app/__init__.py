@@ -46,6 +46,9 @@ def create_app(config_class=Config):
     from app.data import bp as data_bp
     app.register_blueprint(data_bp, url_prefix='/data')
 
+    from app.management import bp as management_bp
+    app.register_blueprint(management_bp, url_prefix='/management')
+
     if not app.debug:
         if not os.path.exists('logs'):
             os.mkdir('logs')

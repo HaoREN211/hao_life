@@ -1,3 +1,4 @@
+wtforms
 Flask_Migrate==2.5.2
 Flask_SQLAlchemy==2.4.1
 Markdown==3.1.1
