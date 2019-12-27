@@ -1,0 +1,99 @@
+{% extends '_base.html' %}
+
+
+    {% block app_content %}
+        <div style="position: relative; top: 0; height: 500px; left: 0; right: 0">
+            <div id="echarts_financial_management" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
+        </div>
+    {% endblock %}
+
+    {% block scripts %}
+        {{ super() }}
+        <script src="{{ url_for('static', filename='js/echarts.min.js') }}"></script>
+        <script type="application/javascript">
+            function f_echarts_financial_management() {
+                var myChart = echarts.init(document.getElementById('echarts_financial_management'));
+                // 指定图表的配置项和数据
+
+{#                var obj = JSON.parse("{{ echarts_data }}");#}
+                // 转化为json对象
+{#                obj = eval("("+obj+")");#}
+
+                console.log("{{ echarts_data }}");
+
+                var option = {
+                        tooltip: {
+                            trigger: 'axis',
+                            position: function (pt) {
+                                return [pt[0], '10%'];
+                            }
+                        },
+                        title: {
+                            left: 'center',
+                            text: '成都银行每日利息统计'
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {}
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: {{ echarts_data.date|tojson }}
+                        },
+                        yAxis: {
+                            type: 'value',
+                            min: {{ echarts_data.data_min }},
+                            max: {{ echarts_data.data_max }},
+                            interval: {{ echarts_data.interval }},
+                            boundaryGap: [0, '100%']
+                        },
+{#                        dataZoom: [{#}
+{#                            type: 'inside',#}
+{#                            start: 0,#}
+{#                            end: 100#}
+{#                        }, {#}
+{#                            start: 0,#}
+{#                            end: 100,#}
+{#                            handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',#}
+{#                            handleSize: '80%',#}
+{#                            handleStyle: {#}
+{#                                color: '#fff',#}
+{#                                shadowBlur: 3,#}
+{#                                shadowColor: 'rgba(0, 0, 0, 0.6)',#}
+{#                                shadowOffsetX: 2,#}
+{#                                shadowOffsetY: 2#}
+{#                            }#}
+{#                        }],#}
+                        series: [
+                            {
+                                name:'利息(元)',
+                                type:'line',
+                                smooth:true,
+                                symbol: 'none',
+                                sampling: 'average',
+                                itemStyle: {
+                                    color: 'rgb(255, 70, 131)'
+                                },
+                                areaStyle: {
+                                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                        offset: 0,
+                                        color: 'rgb(255, 158, 68)'
+                                    }, {
+                                        offset: 1,
+                                        color: 'rgb(255, 70, 131)'
+                                    }])
+                                },
+                                data: {{ echarts_data.data }}
+                            }
+                        ]
+                    };
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+            }
+
+            f_echarts_financial_management();
+        </script>
+    {% endblock %}

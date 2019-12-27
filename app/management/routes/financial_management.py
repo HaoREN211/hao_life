@@ -5,15 +5,17 @@
 
 from flask import render_template, redirect, url_for, flash
 from app.management import bp
-from app import db
-from app.management.forms.financial_management import HaoFinancialManagementForm
+from app.management.forms.financial_management import HaoFinancialManagementForm, HaoFinancialManagementDate
 from app.models.financial_management import HaoFinancialManagement
 import datetime
+from json import dumps
+from math import floor
 
 
 @bp.route('/financial_management', methods=['GET', 'POST'])
 def financial_management():
-    return "666"
+    echarts_data = echarts_financial_management()
+    return render_template('financial_management/index.html', echarts_data=echarts_data)
 
 
 @bp.route('/financial_management/add', methods=['GET', 'POST'])
@@ -36,3 +38,28 @@ def financial_management_add():
         HaoFinancialManagement.add_new_record(statistic_data, daily_interest)
         return redirect(url_for('management.financial_management_add'))
     return render_template('financial_management/add.html', form=form)
+
+
+# 画每日利息折线图时所需要的的数据
+def echarts_financial_management():
+    datas = HaoFinancialManagement.query.order_by(HaoFinancialManagement.statistic_data).all()
+    list_date, list_data = list([]), list([])
+    for current_data in datas:
+        list_data.append(current_data.daily_interest)
+        list_date.append(current_data.statistic_data)
+    list_data = [float(x) for x in list_data]
+    list_date = [x.strftime("%Y-%m-%d") for x in list_date]
+    data_max = max(list_data)
+    data_min = min(list_data)
+    interval = floor(float(data_max-data_min)/float(5))+1
+
+    # return ('{date: ['+",".join(list_date)+'], '
+    #          'data: ['+",".join(list_data)+'], data_max:'+str(data_max)+', data_min:'+str(data_min)+', '
+    #          'interval:'+str(interval)+' }')
+    return HaoFinancialManagementDate(
+        date=list_date,
+        data=list_data,
+        data_max=data_max,
+        data_min=data_min,
+        interval=interval
+    )
