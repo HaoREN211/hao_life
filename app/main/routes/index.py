@@ -6,8 +6,10 @@
 from app.main import bp
 from flask import render_template
 from config import PageConfig
+from app.management.routes.financial_management import echarts_financial_management
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
 def index():
-    return render_template("index.html", title=PageConfig.TITLE)
+    echarts_data = echarts_financial_management()
+    return render_template("index.html", title=PageConfig.TITLE, echarts_financial_management=echarts_data)

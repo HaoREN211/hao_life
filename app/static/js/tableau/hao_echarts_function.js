@@ -12,9 +12,17 @@ function f_echarts_financial_management(div_id, date, data, data_min, data_max, 
                     return [pt[0], '10%'];
                 }
             },
+            grid:{
+                x: 40,
+                x2: 10,
+                y2: 30
+            },
             title: {
                 left: 'center',
-                text: '成都银行每日利息统计'
+                text: '成都银行每日利息统计',
+                textStyle:{
+                    color:'white'
+                }
             },
             toolbox: {
                 feature: {
@@ -24,14 +32,37 @@ function f_echarts_financial_management(div_id, date, data, data_min, data_max, 
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
-                data: date
+                data: date,
+                //  改变x轴颜色
+                axisLine:{
+                    lineStyle:{
+                        color:'#ffffff'
+                    }
+                },
+                //  改变x轴字体颜色和大小
+                 axisLabel: {
+                    textStyle: {
+                        color: '#ffffff'
+                    }
+                }
             },
             yAxis: {
                 type: 'value',
                 min: data_min,
                 max: data_max,
                 interval: data_interval,
-                boundaryGap: [0, '100%']
+                boundaryGap: [0, '100%'],
+                axisLine:{
+                    lineStyle:{
+                        color:'#ffffff'
+                    }
+                },
+                //  改变x轴字体颜色和大小
+                 axisLabel: {
+                    textStyle: {
+                        color: '#ffffff'
+                    }
+                }
             },
             series: [
                 {

@@ -11,7 +11,6 @@
         {{ super() }}
         <script src="{{ url_for('static', filename='js/echarts.min.js') }}"></script>
         <script type="application/javascript">
-
             f_echarts_financial_management('echarts_financial_management', {{ echarts_data.date|tojson }}, {{ echarts_data.data }}, {{ echarts_data.data_min }}, {{ echarts_data.data_max }}, {{ echarts_data.interval }});
         </script>
     {% endblock %}

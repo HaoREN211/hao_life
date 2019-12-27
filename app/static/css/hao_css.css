@@ -22,11 +22,11 @@
     position: relative;
     top: 2%;
     left: 1%;
-    width: 20%;
-    height: 30%;
+    width: 40%;
+    height: 40%;
 }
 
 .hao-tableau-div-transparent {
     border: 1px solid darkgrey;
-    background: rgba(0, 36, 139, 0.1);
+    background: rgba(0, 36, 139, 0.3);
 }
