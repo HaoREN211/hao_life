@@ -25,6 +25,7 @@
         <script src="{{ url_for('static',filename='js/moment-with-locales.min.js') }}"
                 integrity="sha256-AdQN98MVZs44Eq2yTwtoKufhnU+uZ7v2kXnD5vqzZVo=" crossorigin="anonymous"></script>
         {{ moment.include_moment() }}
+        <script src="{{ url_for("static", filename='js/tableau/hao_echarts_function.js') }}"></script>
         <script type="application/javascript">
             moment.locale("zh-CN");
             function flask_moment_render(elem) {

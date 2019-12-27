@@ -8,7 +8,6 @@ from app.management import bp
 from app.management.forms.financial_management import HaoFinancialManagementForm, HaoFinancialManagementDate
 from app.models.financial_management import HaoFinancialManagement
 import datetime
-from json import dumps
 from math import floor
 
 
@@ -42,7 +41,7 @@ def financial_management_add():
 
 # 画每日利息折线图时所需要的的数据
 def echarts_financial_management():
-    datas = HaoFinancialManagement.query.order_by(HaoFinancialManagement.statistic_data).all()
+    datas = HaoFinancialManagement.query.filter(HaoFinancialManagement.statistic_data>'2019-10-23').order_by(HaoFinancialManagement.statistic_data).all()
     list_date, list_data = list([]), list([])
     for current_data in datas:
         list_data.append(current_data.daily_interest)
@@ -53,9 +52,6 @@ def echarts_financial_management():
     data_min = min(list_data)
     interval = floor(float(data_max-data_min)/float(5))+1
 
-    # return ('{date: ['+",".join(list_date)+'], '
-    #          'data: ['+",".join(list_data)+'], data_max:'+str(data_max)+', data_min:'+str(data_min)+', '
-    #          'interval:'+str(interval)+' }')
     return HaoFinancialManagementDate(
         date=list_date,
         data=list_data,
