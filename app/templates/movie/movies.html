@@ -1,0 +1,39 @@
+{% extends '_base.html' %}
+
+{% block app_content %}
+
+    <button class="btn btn-xs btn-success" onclick=window.location.href="{{ url_for('management.movie_add') }}">添加电影</button>
+
+    <table class="table table-hover">
+        <thead>
+            <tr><th>电影名字</th><th>上映时间</th><th>观看时间</th></tr>
+        </thead>
+        {% for movie in movies %}
+            <tr style="cursor:pointer" onclick=window.location.href="{{ url_for("management.movie", id=movie.id) }}">
+                <td>{{ movie.name }}</td>
+                <td>{{ movie.show_time.year }}年{{ movie.show_time.month }}月{{ movie.show_time.day }}日</td>
+                <td>
+                    {% if movie.is_watched and movie.watch_time %}
+                        {{ movie.watch_time.year }}年{{ movie.watch_time.month }}月{{ movie.watch_time.day }}日
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_url %} disabled{% endif %}">
+                <a href="{{ prev_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span> 上一页
+                </a>
+            </li>
+            <li class="next{% if not next_url %} disabled{% endif %}">
+                <a href="{{ next_url or '#' }}">
+                    下一页 <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+{% endblock %}

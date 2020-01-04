@@ -1,0 +1,65 @@
+{% extends "_base.html" %}
+
+{% block app_content %}
+    {{ super() }}
+    <h1>添加电影</h1>
+    <hr />
+
+    <form method="post">
+        {{ movie_form.csrf_token() }}
+        <div class="col-sm-3">
+            <div class="row input-group">
+                <span class="input-group-addon">电影名称</span>
+                {{ movie_form.name(placeholder="电影名称", class="form-control", autocomplete='off') }}
+            </div>
+            <br />
+            <div class="row input-group">
+                <span class="input-group-addon">上映时间</span>
+                {{ movie_form.show_time(class="form-control", type="date", autocomplete='off') }}
+            </div>
+            <br />
+            <div class="row input-group">
+                <span class="input-group-addon">片长(分)</span>
+                {{ movie_form.film_length(class="form-control", placeholder="片长(分)", type='number', step=1, autocomplete='off') }}
+            </div>
+            <br />
+            <div class="row input-group">
+                <span class="input-group-addon">海报链接</span>
+                {{ movie_form.bill_link(class="form-control", placeholder="海报链接", autocomplete='off') }}
+            </div>
+            <br />
+            <div class="row input-group">
+                是否观看：{{ movie_form.is_watched(onchange="is_watch_changed()") }}
+                <br />
+            </div>
+            <div class="row input-group" id="div_watch_time" style="display: none">
+                <span class="input-group-addon">观看时间</span>
+                {{ movie_form.watch_time(class="form-control", type="date", autocomplete='off') }}
+            </div>
+            <br />
+            <div class="row input-group">
+                <span class="input-group-addon">电影简介</span>
+                {{ movie_form.description(class="form-control", autocomplete='off') }}
+            </div>
+            <br />
+            <div class="row">
+                {{ movie_form.submit(class="btn btn-xs btn-success") }}
+                <button type="button" class="btn btn-xs btn-danger" onclick=window.location.href="{{ url_for('management.movies') }}">取消</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="application/javascript">
+        function is_watch_changed() {
+            if (document.getElementById("div_watch_time").style.display === ""){
+                document.getElementById("div_watch_time").style.display = "none"
+            }
+            else {
+                document.getElementById("div_watch_time").style.display = ""
+            }
+        }
+    </script>
+{% endblock %}

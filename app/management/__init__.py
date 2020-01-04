@@ -7,4 +7,4 @@ from flask import Blueprint
 
 bp = Blueprint('management', __name__)
 
-from app.management.routes import financial_management
+from app.management.routes import financial_management, movie

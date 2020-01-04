@@ -1,0 +1,33 @@
+{% extends '_base.html' %}
+
+{% block app_content %}
+    {{ super() }}
+    <div class="row">
+        <div class="col-sm-3">
+            {% if movie.bill_link %}
+                <br />
+                <img src="{{ movie.bill_link }}" style="width: 100%">
+            {% endif %}
+        </div>
+
+        <div class="col-sm-8">
+            <table class="table-hover">
+                <tr><td><h1>{{ movie.name }}</h1></td></tr>
+                {% if movie.show_time %}
+                    <tr><td>上映时间：{{ movie.show_time.year }}年{{ movie.show_time.month }}月{{ movie.show_time.day }}日</td></tr>
+                 {% endif %}
+                <tr><td>电影时长：{{ movie.film_length }}分钟</td></tr>
+                {% if movie.is_watched and movie.watch_time %}
+                    <tr><td>观影时间：{{ movie.watch_time.year }}年{{ movie.watch_time.month }}月{{ movie.watch_time.day }}日</td></tr>
+                {% endif %}
+            </table>
+
+            <hr />
+
+            <table class="table-hover">
+                <tr><td><h3>电影简介</h3></td></tr>
+                <tr><td>{{ movie.description }}</td></tr>
+            </table>
+        </div>
+    </div>
+{% endblock %}

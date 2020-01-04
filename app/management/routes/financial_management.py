@@ -3,12 +3,13 @@
 # 时间：2019/12/26 9:18
 # IDE：PyCharm
 
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, request
 from app.management import bp
 from app.management.forms.financial_management import HaoFinancialManagementForm, HaoFinancialManagementDate
 from app.models.financial_management import HaoFinancialManagement
 import datetime
 from math import floor
+from sqlalchemy.sql import func
 
 
 @bp.route('/financial_management', methods=['GET', 'POST'])
@@ -20,6 +21,12 @@ def financial_management():
 @bp.route('/financial_management/add', methods=['GET', 'POST'])
 def financial_management_add():
     form = HaoFinancialManagementForm()
+
+    if request.method == "GET":
+        max_date = HaoFinancialManagement.query.with_entities(func.max(HaoFinancialManagement.statistic_data)).first()
+        new_date = max_date[0] + datetime.timedelta(days=1)
+        form.statistic_data.data = new_date
+
     if form.validate_on_submit():
         statistic_data = form.statistic_data.data
         daily_interest = form.daily_interest.data
