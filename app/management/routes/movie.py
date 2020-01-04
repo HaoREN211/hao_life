@@ -6,6 +6,7 @@
 from app import db
 from app.management import bp
 from flask import render_template, request, flash, url_for, redirect
+from flask_login import login_required, current_user
 from app.models.movie import Movie, MovieCinema
 from app.management.forms.movie import MovieForm, MovieCinemaForm
 from datetime import datetime
@@ -40,7 +41,11 @@ def movie(id):
 
 # 新增电影院
 @bp.route('/cinema/add', methods=['GET', 'POST'])
+@login_required
 def cinema_add():
+    if not current_user.is_admin:
+        flash("您不是超级管理员，无法进行电影院数据的管理")
+        return redirect(url_for("management.cinemas"))
     cinema_form = MovieCinemaForm()
     if cinema_form.is_submitted():
         if cinema_form.validate():
@@ -59,7 +64,13 @@ def cinema_add():
 
 # 新增电影
 @bp.route('/movie/add', methods=['GET', 'POST'])
+@login_required
 def movie_add():
+
+    if not current_user.is_admin:
+        flash("您不是超级管理员，无法进行电影数据的管理")
+        return redirect(url_for("management.movies"))
+
     movie_form = MovieForm()
     if request.method =="GET":
         movie_form.watch_time.data = datetime.utcnow().date()

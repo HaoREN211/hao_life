@@ -4,6 +4,7 @@
 # IDE：PyCharm
 
 from flask import render_template, flash, redirect, url_for, request
+from flask_login import login_required, current_user
 from app import db
 from app.management import bp
 from app.models.country import Country
@@ -22,7 +23,11 @@ def countries():
 
 # 添加国家
 @bp.route('/country/add', methods=['GET', 'POST'])
+@login_required
 def country_add():
+    if not current_user.is_admin:
+        flash("您不是超级管理员，无法进行国家数据的管理")
+        return redirect(url_for("management.countries"))
     country_form = CountryForm()
     if country_form.is_submitted():
         if country_form.validate():

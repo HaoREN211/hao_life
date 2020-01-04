@@ -7,6 +7,7 @@ from flask import render_template, redirect, url_for, flash, request
 from app.management import bp
 from app.management.forms.financial_management import HaoFinancialManagementForm, HaoFinancialManagementDate
 from app.models.financial_management import HaoFinancialManagement
+from flask_login import current_user, login_required
 import datetime
 from math import floor
 from sqlalchemy.sql import func
@@ -19,7 +20,12 @@ def financial_management():
 
 
 @bp.route('/financial_management/add', methods=['GET', 'POST'])
+@login_required
 def financial_management_add():
+    if not current_user.is_admin:
+        flash("您不是超级管理员，无法进行理财数据管理功能")
+        return redirect(url_for("management.financial_management"))
+
     form = HaoFinancialManagementForm()
 
     if request.method == "GET":
