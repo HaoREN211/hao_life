@@ -65,9 +65,6 @@ def movie_add():
         movie_form.watch_time.data = datetime.utcnow().date()
 
     if movie_form.is_submitted():
-        print("------------------")
-        print(movie_form.cinema_id.data)
-        print("------------------")
         if movie_form.validate():
             to_add = Movie(
                 name=str(movie_form.name.data).strip(),
@@ -76,7 +73,8 @@ def movie_add():
                 bill_link=str(movie_form.bill_link.data).strip(),
                 is_watched=movie_form.is_watched.data,
                 description=str(movie_form.description.data).strip(),
-                cinema_id=int(movie_form.cinema_id.data)
+                cinema_id=int(movie_form.cinema_id.data),
+                country_id=int(movie_form.country_id.data)
             )
             if movie_form.is_watched.data:
                 to_add.watch_time = movie_form.watch_time.data

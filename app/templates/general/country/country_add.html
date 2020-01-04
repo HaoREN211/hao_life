@@ -1,0 +1,24 @@
+{% extends '_base.html' %}
+
+{% block app_content %}
+    {{ super() }}
+    <h1>添加国家</h1>
+    <hr />
+
+    <form method="post">
+        {{ country_form.csrf_token() }}
+        <div class="col-sm-3">
+            <div class="row input-group">
+                <span class="input-group-addon">国家名称</span>
+                {{ country_form.name(placeholder="国家名称", class="form-control", autocomplete='off') }}
+            </div>
+            <br />
+            <div class="row">
+                {{ country_form.submit(class="btn btn-xs btn-success") }}
+                <button type="button" class="btn btn-xs btn-danger" onclick=window.location.href="{{ url_for('management.countries') }}">取消</button>
+            </div>
+        </div>
+    </form>
+
+    <hr />
+{% endblock %}

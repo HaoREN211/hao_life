@@ -7,6 +7,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, DateField, IntegerField, BooleanField, TextAreaField, SubmitField, SelectField
 from wtforms.validators import DataRequired, ValidationError
 from app.models.movie import Movie, MovieCinema
+from app.models.country import Country
 
 
 # 定义一个方法，方法的名字规则是：`validate_字段名(self,字段名)`。
@@ -29,11 +30,13 @@ class MovieForm(FlaskForm):
     watch_time = DateField("观看时间")
     description = TextAreaField("电影简介", validators=[DataRequired()])
     cinema_id = SelectField("电影院", validators=[DataRequired()], coerce=int)
+    country_id = SelectField("拍摄国家", validators=[DataRequired()], coerce=int)
     submit = SubmitField("添加")
 
     def __init__(self, *args, **kwargs):
         super(MovieForm, self).__init__(*args, **kwargs)
         self.cinema_id.choices = [(x.id, x.name) for x in MovieCinema.query.all()]
+        self.country_id.choices = [(x.id, x.name) for x in Country.query.all()]
 
 class MovieCinemaForm(FlaskForm):
     name = StringField("电影院名字", validators=[DataRequired(), validate_cinema_name])

@@ -19,6 +19,7 @@ class Movie(db.Model):
     create_time = db.Column(db.DateTime, default=datetime.utcnow(), comment="创建时间")
     update_time = db.Column(db.DateTime, default=datetime.utcnow(), comment="修改时间")
     cinema_id = db.Column(BIGINT(unsigned=True), db.ForeignKey("movie_cinema.id"), comment="电影院主键")
+    country_id = db.Column(BIGINT(unsigned=True), db.ForeignKey("country.id"), comment="拍摄国家主键")
 
 
 class MovieCinema(db.Model):
