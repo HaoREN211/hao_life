@@ -1,0 +1,18 @@
+{% extends '_base.html' %}
+
+{% block app_content %}
+
+    <button class="btn btn-xs btn-success" onclick=window.location.href="{{ url_for('management.cinema_add') }}">添加电影院</button>
+
+    <table class="table table-hover">
+        <thead>
+            <tr><th>电影院名字</th><th>电影院地址</th></tr>
+        </thead>
+        {% for cinema in cinemas %}
+            <tr style="cursor:pointer">
+                <td>{{ cinema.name }}</td>
+                <td>{{ cinema.address }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

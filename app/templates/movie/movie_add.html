@@ -42,6 +42,11 @@
                 {{ movie_form.description(class="form-control", autocomplete='off') }}
             </div>
             <br />
+            <div class="row input-group">
+                <span class="input-group-addon">电影院</span>
+                {{ movie_form.cinema_id(class="form-control", autocomplete='off') }}
+            </div>
+            <br />
             <div class="row">
                 {{ movie_form.submit(class="btn btn-xs btn-success") }}
                 <button type="button" class="btn btn-xs btn-danger" onclick=window.location.href="{{ url_for('management.movies') }}">取消</button>

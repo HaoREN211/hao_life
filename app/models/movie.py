@@ -18,3 +18,12 @@ class Movie(db.Model):
     description = db.Column(db.Text(16777216), nullable=False, comment="电影简介")
     create_time = db.Column(db.DateTime, default=datetime.utcnow(), comment="创建时间")
     update_time = db.Column(db.DateTime, default=datetime.utcnow(), comment="修改时间")
+    cinema_id = db.Column(BIGINT(unsigned=True), db.ForeignKey("movie_cinema.id"), comment="电影院主键")
+
+
+class MovieCinema(db.Model):
+    id = db.Column(BIGINT(unsigned=True), primary_key=True, comment="电影院主键")
+    name = db.Column(db.String(100), nullable=False, unique=True, comment="电影院名字")
+    address = db.Column(db.String(100), nullable=False, unique=True, comment="电影院地址")
+
+    movies = db.relationship("Movie", backref="cinema", lazy='dynamic')
