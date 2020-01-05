@@ -4,20 +4,20 @@
 {% block app_content %}
     {% if current_user.is_authenticated and current_user.is_admin %}
         <input type="button" class="btn btn-xs btn-success" value="添加"
-                data-toggle="modal" data-target="#myModalCinemaCreate">
-        <div class="modal fade" id="myModalCinemaCreate" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
+                data-toggle="modal" data-target="#myModalTypeCreate">
+        <div class="modal fade" id="myModalTypeCreate" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
                         </button>
                         <h4 class="modal-title" id="myModalCvMainAttributeLabel">
-                            添加新电影院
+                            添加新电影类型
                         </h4>
                     </div>
 
                     <div class="modal-body">
-                        {{ wtf.quick_form(create_form) }}
+                        {{ wtf.quick_form(movie_type_create_form) }}
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
@@ -26,57 +26,58 @@
 
     <table class="table table-hover">
         <thead>
-            <tr><th>电影院名字</th><th>电影院地址</th>
+            <tr><th>电影类型名字</th><th>创建时间</th>
                 {% if current_user.is_authenticated and current_user.is_admin %}
                     <th>管理</th>
                 {% endif %}
             </tr>
         </thead>
-        {% for cinema in cinemas %}
+
+        {% for type in types  %}
             <tr style="cursor:pointer">
-                <td>{{ cinema.name }}</td>
-                <td>{{ cinema.address }}</td>
+                <td>{{ type.name }}</td>
+                <td>{{ moment(type.create_time).fromNow() }}</td>
                 {% if current_user.is_authenticated and current_user.is_admin %}
                     <td>
                         <input type="button" class="btn btn-xs btn-warning" value="修改"
-                               data-toggle="modal" data-target="#myModalCinema{{ cinema.id }}">
-                        <div class="modal fade" id="myModalCinema{{ cinema.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
+                               data-toggle="modal" data-target="#myModalType{{ type.id }}">
+                        <div class="modal fade" id="myModalType{{ type.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
                                         </button>
                                         <h4 class="modal-title" id="myModalCvMainAttributeLabel">
-                                            修改电影院资料
+                                            修改电影类型资料
                                         </h4>
                                     </div>
                                     <div class="modal-body">
-                                            {{ wtf.quick_form(dict_cinema[cinema.id]) }}
+                                        {{ wtf.quick_form(list_modify_form[type.id]) }}
                                     </div>
                                 </div><!-- /.modal-content -->
                             </div><!-- /.modal-dialog -->
                         </div><!-- /.modal -->
 
+
                         <input type="button" class="btn btn-xs btn-danger" value="删除"
-                                data-toggle="modal" data-target="#myModalCinemaDelete{{ cinema.id }}">
-                        <div class="modal fade" id="myModalCinemaDelete{{ cinema.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
+                                data-toggle="modal" data-target="#myModalCinemaDelete{{ type.id }}">
+                        <div class="modal fade" id="myModalCinemaDelete{{ type.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
                                         </button>
                                         <h4 class="modal-title" id="myModalCvMainAttributeLabel">
-                                            您确认要删除该电影院吗？
+                                            您确认要删除该电影类型吗？
                                         </h4>
                                     </div>
-                                    <form method="post" id="form_delete_{{ cinema.id }}">
+                                    <form method="post" id="form_delete_{{ type.id }}">
                                         <div class="modal-body">
                                                 {{ delete_form.csrf_token() }}
                                                 <div class="input-group col-sm-10">
-                                                    {{ delete_form.id(class="form-control", value=cinema.id) }}
+                                                    {{ delete_form.id(class="form-control", value=type.id) }}
                                                 </div>
-                                                <p><span>{{ cinema.name }}</span></p>
-                                                <p><span>{{ cinema.address }}</span></p>
+                                                <p><span>{{ type.name }}</span></p>
                                         </div>
                                         <div class="modal-footer">
                                             {{ delete_form.delete_submit(class="btn btn-xs btn-primary") }}&nbsp;

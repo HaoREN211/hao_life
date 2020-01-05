@@ -7,7 +7,7 @@
 
     <table class="table table-hover">
         <thead>
-            <tr><th>电影名字</th><th>上映时间</th><th>观看时间</th><th>拍摄国家</th></tr>
+            <tr><th>电影名字</th><th>上映时间</th><th>观看时间</th><th>电影类型</th><th>拍摄国家</th></tr>
         </thead>
         {% for movie in movies %}
             <tr style="cursor:pointer" onclick=window.location.href="{{ url_for("management.movie", id=movie.id) }}">
@@ -18,6 +18,7 @@
                         {{ movie.watch_time.year }}年{{ movie.watch_time.month }}月{{ movie.watch_time.day }}日
                     {% endif %}
                 </td>
+                <td>{{ movie.type_name_list() }}</td>
                 <td>{{ movie.country.name }}</td>
             </tr>
         {% endfor %}
