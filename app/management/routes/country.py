@@ -9,13 +9,14 @@ from app import db
 from app.management import bp
 from app.models.country import Country
 from app.management.forms.country import CountryForm
+from sqlalchemy import desc
 
 
 # 国家列表
 @bp.route('/countries', methods=['GET'])
 def countries():
     page = request.args.get('page', 1, type=int)
-    countries = Country.query.paginate(page, 15, False)
+    countries = Country.query.order_by(desc(Country.movie_cnt)).paginate(page, 15, False)
     next_url = url_for('management.counties', page=countries.next_num) if countries.has_next else None
     prev_url = url_for('management.counties', page=countries.prev_num) if countries.has_prev else None
     return render_template("general/country/countries.html", countries=countries.items, next_url=next_url, prev_url=prev_url)

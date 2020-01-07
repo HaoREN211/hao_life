@@ -7,11 +7,12 @@
 
     <table class="table table-hover">
         <thead>
-            <tr><th>国家名称</th></tr>
+            <tr><th>国家名称</th><th>制作电影数量</th></tr>
         </thead>
         {% for country in countries %}
             <tr style="cursor:pointer">
                 <td>{{ country.name }}</td>
+                <td>{{ country.movie_cnt }}</td>
             </tr>
         {% endfor %}
     </table>

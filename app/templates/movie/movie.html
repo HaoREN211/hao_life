@@ -29,6 +29,7 @@
                 {% if movie and movie.country %}
                     <tr><td>拍摄国家：{{ movie.country.name }}</td></tr>
                 {% endif %}
+                    {#电影类别#}
                     <tr><td>电影类别：
                     {{ movie.type_name_list() }}
                         {% if current_user.is_authenticated and current_user.is_admin %}
@@ -47,6 +48,31 @@
 
                                         <div class="modal-body" style="width: 500px">
                                             {{ wtf.quick_form(movie_type_select_form) }}
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </div><!-- /.modal-dialog -->
+                            </div><!-- /.modal -->
+                        {% endif %}
+                    </td></tr>
+                    {#电影演员#}
+                    <tr><td>电影演员：
+                    {{ movie.actor_name_list() }}
+                        {% if current_user.is_authenticated and current_user.is_admin %}
+                            <input type="button" class="btn btn-xs btn-success" value="添加"
+                            data-toggle="modal" data-target="#myModalActorSelect">
+                            <div class="modal fade" id="myModalActorSelect" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                                            </button>
+                                            <h4 class="modal-title" id="myModalCvMainAttributeLabel">
+                                                添加电影演员
+                                            </h4>
+                                        </div>
+
+                                        <div class="modal-body" style="width: 500px">
+                                            {{ wtf.quick_form(movie_actor_select_form) }}
                                         </div>
                                     </div><!-- /.modal-content -->
                                 </div><!-- /.modal-dialog -->

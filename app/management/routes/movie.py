@@ -10,7 +10,8 @@ from flask_login import login_required, current_user
 from app.models.movie import Movie, MovieCinema, MovieType
 from app.management.forms.movie import (MovieForm, MovieTypeForm, MovieModifyForm,
                                         MovieCinemaModifyForm, MovieDeleteForm, MovieCinemaCreateForm,
-                                        MovieTypeModifyForm, MovieTypeSelectForm)
+                                        MovieTypeModifyForm, MovieTypeSelectForm, MovieActorSelectForm)
+from sqlalchemy import desc
 from datetime import datetime
 
 
@@ -18,7 +19,7 @@ from datetime import datetime
 @bp.route('/movies', methods=['GET'])
 def movies():
     page = request.args.get('page', 1, type=int)
-    movies = Movie.query.paginate(page, 10, False)
+    movies = Movie.query.order_by(Movie.show_time.desc()).paginate(page, 10, False)
     next_url = url_for('management.movies', page=movies.next_num) if movies.has_next else None
     prev_url = url_for('management.movies', page=movies.prev_num) if movies.has_prev else None
     return render_template("movie/movies.html", movies=movies.items, next_url=next_url, prev_url=prev_url)
@@ -33,7 +34,7 @@ def cinemas():
     dict_cinema = {}
 
     page = request.args.get('page', 1, type=int)
-    cinemas = MovieCinema.query.paginate(page, 10, False)
+    cinemas = MovieCinema.query.order_by(desc(MovieCinema.movie_cnt)).paginate(page, 10, False)
 
     if request.method == "GET":
         if current_user.is_authenticated and current_user.is_admin:
@@ -71,7 +72,7 @@ def movie_types():
     movie_type_modify_form = MovieTypeModifyForm()
     delete_form = MovieDeleteForm()
     page = request.args.get('page', 1, type=int)
-    types = MovieType.query.paginate(page, 10, False)
+    types = MovieType.query.order_by(desc(MovieType.movie_cnt)).paginate(page, 10, False)
     list_modify_form = {}
 
     if request.method == "GET":
@@ -174,6 +175,14 @@ def function_movie_add_type(movie_type_select_form, current_movie):
         flash("电影类型没有发生变化")
     return redirect(url_for("management.movie", id=current_movie.id))
 
+# 给电影添加类型
+def function_movie_add_actor(movie_actor_select_form, current_movie):
+    result = current_movie.update_actor_by_list_actor_id(movie_actor_select_form.list_select.data)
+    if result:
+        flash(result)
+    else:
+        flash("电影演员没有发生变化")
+    return redirect(url_for("management.movie", id=current_movie.id))
 
 # 打印错误信息
 def flash_form_errors(form):
@@ -186,27 +195,35 @@ def flash_form_errors(form):
 @bp.route('/movie/<id>', methods=['GET', 'POST'])
 def movie(id):
     movie_type_select_form = MovieTypeSelectForm()
+    movie_actor_select_form = MovieActorSelectForm()
     current_movie = Movie.query.filter_by(id=id).first()
     list_types = current_movie.types
     list_type_id = [int(x.id) for x in list_types]
-
-    if request.method == "GET":
-        if current_user.is_authenticated and current_user.is_admin:
-            movie_type_select_form.list_select.data = list_type_id
+    list_actors = current_movie.actors
+    list_actor_id = [int(x.id) for x in list_actors]
 
     if request.method == "POST":
         if current_user.is_authenticated and current_user.is_admin:
-            if movie_type_select_form.is_submitted():
+            if movie_type_select_form.movie_type_select_submit.data and movie_type_select_form.is_submitted():
                 if movie_type_select_form.validate():
                     return function_movie_add_type(movie_type_select_form, current_movie)
                 else:
                     flash_form_errors(movie_type_select_form)
-            movie_type_select_form.list_select.data = list_type_id
+        if movie_actor_select_form.movie_actor_select_submit.data and movie_actor_select_form.is_submitted():
+            if movie_actor_select_form.validate():
+                return function_movie_add_actor(movie_actor_select_form, current_movie)
+            else:
+                flash_form_errors(movie_actor_select_form)
         else:
             flash("您不是超级管理员，无法进行电影院数据的管理")
             return redirect(url_for("management.movie", id=id))
+    if current_user.is_authenticated and current_user.is_admin:
+        movie_type_select_form.list_select.data = list_type_id
+        movie_actor_select_form.list_select.data = list_actor_id
 
-    return render_template("movie/movie.html", movie=current_movie, movie_type_select_form=movie_type_select_form)
+    return render_template("movie/movie.html", movie=current_movie,
+                           movie_type_select_form=movie_type_select_form,
+                           movie_actor_select_form=movie_actor_select_form)
 
 
 # 新增电影

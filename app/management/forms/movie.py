@@ -9,6 +9,7 @@ from wtforms import (StringField, DateField, IntegerField, BooleanField, TextAre
 from wtforms.validators import DataRequired, ValidationError, Length
 from app.models.movie import Movie, MovieCinema, MovieType
 from app.models.country import Country
+from app.models.person import Person
 
 
 class RenderForm(FlaskForm):
@@ -21,7 +22,7 @@ class RenderForm(FlaskForm):
             other_kw = getattr(field, 'render_kw', None)
             if other_kw is not None:
                 # 只保留自定义的class
-                list_attribute_keep = ["class", "type", "onclick", "readonly", "data-dismiss"]
+                list_attribute_keep = ["class", "type", "onclick", "readonly", "data-dismiss", "step", "start"]
 
                 for current_attribute in list_attribute_keep:
                     attribute_value = other_kw.get(current_attribute, None)
@@ -32,7 +33,7 @@ class RenderForm(FlaskForm):
                 class2 = render_kw.get('class', None)
             return field.widget(field, **render_kw)
 
-
+# 电影类型选择表
 class MovieTypeSelectForm(RenderForm):
     list_select = SelectMultipleField("电影类型",
                                       coerce=int, choices=[(1, "test"), (2, "haha")],
@@ -45,10 +46,23 @@ class MovieTypeSelectForm(RenderForm):
 
     def __init__(self, *args, **kwargs):
         super(MovieTypeSelectForm, self).__init__(*args, **kwargs)
-        # current_movie_types = Movie.query.filter_by(id=int(movie_id)).first().types
         all_types = MovieType.query.all()
         self.list_select.choices = [(x.id, x.name) for x  in all_types]
-        # self.list_select.data = [int(x.id) for x in current_movie_types]
+
+# 电影演员选择表
+class MovieActorSelectForm(RenderForm):
+    list_select = SelectMultipleField("电影演员",
+                                      coerce=int, choices=[(1, "test"), (2, "haha")],
+                                      render_kw={"class": "select_tags form-control"})
+    movie_actor_select_submit = SubmitField("添加", render_kw={"class": "btn btn-xs btn-success"})
+    cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
+                                          "data-dismiss": "modal",
+                                          "type": "button"})
+
+    def __init__(self, *args, **kwargs):
+        super(MovieActorSelectForm, self).__init__(*args, **kwargs)
+        all_actors = Person.query.all()
+        self.list_select.choices = [(x.id, x.name) for x in all_actors]
 
 
 # 定义一个方法，方法的名字规则是：`validate_字段名(self,字段名)`。
@@ -56,7 +70,6 @@ def validate_name(form, field):
     list_movie = Movie.query.filter_by(name=str(field.data).strip()).all()
     if len(list_movie) > 0:
         raise ValidationError("电影《" + str(field.data).strip() + "》已经存在")
-
 
 class MovieForm(FlaskForm):
     name = StringField("电影名字", validators=[DataRequired(), validate_name])
@@ -75,7 +88,6 @@ class MovieForm(FlaskForm):
         self.cinema_id.choices = [(x.id, x.name) for x in MovieCinema.query.all()]
         self.country_id.choices = [(x.id, x.name) for x in Country.query.all()]
 
-
 class MovieModifyForm(FlaskForm):
     name = StringField("电影名字", validators=[DataRequired()], render_kw={"readonly":"readonly"})
     show_time = DateField("上映时间", validators=[DataRequired()])
@@ -92,7 +104,6 @@ class MovieModifyForm(FlaskForm):
         super(MovieModifyForm, self).__init__(*args, **kwargs)
         self.cinema_id.choices = [(x.id, x.name) for x in MovieCinema.query.all()]
         self.country_id.choices = [(x.id, x.name) for x in Country.query.all()]
-
 
 class MovieCinemaCreateForm(RenderForm):
     name = StringField("电影院名字", validators=[DataRequired()])
@@ -141,8 +152,6 @@ class MovieCinemaModifyForm(RenderForm):
             if sum(list_id) > 0:
                 raise ValidationError('修改失败：《' + str(address.data) + '》已经存在，请挑选另外一个地址。')
 
-
-
 class MovieTypeForm(RenderForm):
     name = StringField("电影类型名字", validators=[DataRequired(),
                                              Length(min=1, max=100, message="电影类型长度在1-100之间")])
@@ -156,7 +165,6 @@ class MovieTypeForm(RenderForm):
         users = MovieType.query.filter_by(name=str(name.data)).all()
         if len(users)>0:
             raise ValidationError('已经添加过《'+str(name.data)+'》电影类型。')
-
 
 class MovieTypeModifyForm(RenderForm):
     id = HiddenField("电影类型主键", validators=[DataRequired()])
