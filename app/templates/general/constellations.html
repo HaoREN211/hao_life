@@ -1,0 +1,44 @@
+{% extends '_base.html' %}
+
+
+{% block app_content %}
+    {{ super() }}
+
+    <input type="button" class="btn btn-xs btn-success" value="查询"
+        data-toggle="modal" data-target="#myModalTypeSelect">
+    <div class="modal fade" id="myModalTypeSelect" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title" id="myModalCvMainAttributeLabel">
+                        请输入时间，年份请随意输入
+                    </h4>
+                </div>
+
+                <div class="modal-body" style="width: 500px">
+                    {{ wtf.quick_form(time_form) }}
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <table class="table table-hover">
+        <thead>
+        <tr><th>顺序</th><th>星座</th>
+            <th>英文名</th><th>法语名</th>
+            <th>起始时间</th><th>结束时间</th></tr>
+        </thead>
+        {% for constellation in constellations %}
+            <tr>
+                <td>{{ constellation.id }}</td>
+                <td>{{ constellation.name }}</td>
+                <td>{{ constellation.english_name }}</td>
+                <td>{{ constellation.french_name }}</td>
+                <td>{{ constellation.start_time.month }}月{{ constellation.start_time.day }}日</td>
+                <td>{{ constellation.end_time.month }}月{{ constellation.end_time.day }}日</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

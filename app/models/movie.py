@@ -36,7 +36,7 @@ class Movie(db.Model):
     film_length = db.Column(db.Integer, nullable=False, comment="片长(分)")
     bill_link = db.Column(db.String(500), nullable=True, comment="海报链接")
     is_watched = db.Column(db.Boolean, nullable=True, comment="是否观看")
-    watch_time = db.Column(db.Date, nullable=True, index=True, comment="观看时间")
+    watch_time = db.Column(db.DateTime, nullable=True, index=True, comment="观看时间")
     description = db.Column(db.Text(16777216), nullable=False, comment="电影简介")
     create_time = db.Column(db.DateTime, default=datetime.utcnow(), comment="创建时间")
     update_time = db.Column(db.DateTime, default=datetime.utcnow(), comment="修改时间")
@@ -50,7 +50,7 @@ class Movie(db.Model):
     def actor_name_list(self):
         if self.actors.count() == 0:
             return ""
-        return "、".join([str(x.name) for x in self.actors])
+        return "/".join([str(x.name) for x in self.actors])
 
     def update_actor_by_list_actor_id(self, list_actor_id):
         info = ""

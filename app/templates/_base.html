@@ -62,14 +62,20 @@
                     <ul class="nav navbar-nav">
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                理财 <b class="caret"></b>
+                                财务 <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="{{ url_for('management.financial_management') }}">主页</a></li>
-                                {% if current_user.is_authenticated and current_user.is_admin %}
-                                    <li class="divider"></li>
-                                    <li><a href="{{ url_for('management.financial_management_add') }}">添加</a></li>
-                                {% endif %}
+                                <li><a href="{{ url_for('management.financial_management') }}">理财</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{{ url_for('management.consumes') }}">消费</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{{ url_for('management.consume_types') }}">消费种类</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{{ url_for('management.consume_descriptions') }}">消费说明</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{{ url_for('management.consume_ways') }}">支付方式</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{{ url_for('management.consume_plates') }}">支付平台</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -92,6 +98,10 @@
                                 <li><a href="{{ url_for('management.countries') }}">国家</a></li>
                                 <li class="divider"></li>
                                 <li><a href="{{ url_for('management.persons') }}">人物</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{{ url_for('management.constellations') }}">星座</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{{ url_for('management.shops') }}">商店</a></li>
                             </ul>
                         </li>
                     </ul>

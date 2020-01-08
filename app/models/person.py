@@ -34,4 +34,4 @@ class Person(db.Model):
         if len(self.acted_movies) == 0:
             return None
         list_name = [x.name for x in self.acted_movies]
-        return '、'.join(list_name)
+        return '/'.join(list_name)

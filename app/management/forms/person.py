@@ -16,7 +16,8 @@ class PersonCreateForm(RenderForm):
     bill_link = StringField("海报链接", validators=[Length(max=500)])
     foreign_name = StringField("外国名字", validators=[Length(max=100)])
     sex = SelectField("性别", choices=[(0, "男性"), (1, "女性"), (2, "不明")], coerce=int, default=2)
-    birth_day = DateField("出生日期", default=datetime.datetime.strptime("2111-11-11", "%Y-%m-%d"))
+    birth_day = DateField("出生日期", default=datetime.datetime.strptime("2111-11-11", "%Y-%m-%d"),
+                          render_kw={"type": "date"})
     nationality_id = SelectField("国籍", coerce=int, choices=[(0, "暂无")], default=0)
     birth_city_id = SelectField("出生城市", coerce=int, choices=[(0, "暂无")], default=0)
     origin_city_id = SelectField("籍贯城市", coerce=int, choices=[(0, "暂无")], default=0)

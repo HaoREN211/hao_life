@@ -2,6 +2,11 @@
 
 
     {% block app_content %}
+        {% if current_user.is_authenticated and current_user.is_admin %}
+            <input type="button" class="btn btn-xs btn-success" value="添加"
+            onclick=window.location.href="{{ url_for('management.financial_management_add') }}">
+        {% endif %}
+
         <div style="position: relative; top: 0; height: 500px; left: 0; right: 0">
             <div id="echarts_financial_management" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
         </div>
