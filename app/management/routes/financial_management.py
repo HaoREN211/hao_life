@@ -61,8 +61,8 @@ def echarts_financial_management():
         list_date.append(current_data.statistic_data)
     list_data = [float(x) for x in list_data]
     list_date = [x.strftime("%Y-%m-%d") for x in list_date]
-    data_max = max(list_data)
-    data_min = min(list_data)
+    data_max = max(list_data) if len(list_data) > 0 else 0
+    data_min = min(list_data) if len(list_data) > 0 else 0
     interval = floor(float(data_max-data_min)/float(5))+1
 
     return HaoFinancialManagementDate(

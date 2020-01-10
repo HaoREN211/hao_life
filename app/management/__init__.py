@@ -11,3 +11,4 @@ from app.management.routes import financial_management, movie, estate
 from app.management.routes.consume import consume, consume_way, consume_type, consume_plate, consume_description
 from app.management.routes.general import constellation, person, shop, enterprise
 from app.management.routes.location import province, country, city, dristrict
+from app.management.routes.work import salary

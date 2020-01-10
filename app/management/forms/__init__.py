@@ -6,6 +6,7 @@ from app import db
 from flask import redirect, url_for, flash
 from datetime import datetime
 from app.management.forms.estate import EstateModifyForm, BuildingTypeModifyForm, BuildingPropertyModifyForm, BuildingModifyForm
+from app.management.forms.work.salary import SalaryModifyForm
 
 # 重新构造修改的表单
 def modify_form_constructor(items, temp_form):
@@ -20,6 +21,8 @@ def modify_form_constructor(items, temp_form):
             modify_form = BuildingPropertyModifyForm()
         elif temp_form == "BuildingModifyForm":
             modify_form = BuildingModifyForm()
+        elif temp_form == "SalaryModifyForm":
+            modify_form = SalaryModifyForm()
 
         for current_key in modify_form.__dict__.keys():
             if str(current_key).startswith("_"):
