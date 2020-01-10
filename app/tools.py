@@ -3,6 +3,10 @@
 # 时间：2020/1/8 15:27
 # IDE：PyCharm
 
+def get_standard_name(new_name):
+    return str(new_name).strip() if (
+        (new_name is not None) and len(str(new_name).strip()) > 0) else None
+
 
 # 从datetime中重建构造datetime_local所需要的的格式
 def reform_datetime_local_with_datetime(datetime):

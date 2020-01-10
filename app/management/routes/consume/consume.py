@@ -47,8 +47,8 @@ def consumes():
 
     modify_form = modify_form_constructor(list_consumes)
 
-    next_url = url_for('management.persons', page=list_consumes.next_num) if list_consumes.has_next else None
-    prev_url = url_for('management.persons', page=list_consumes.prev_num) if list_consumes.has_prev else None
+    next_url = url_for('management.consumes', page=list_consumes.next_num) if list_consumes.has_next else None
+    prev_url = url_for('management.consumes', page=list_consumes.prev_num) if list_consumes.has_prev else None
 
     return render_template("financial_management/consume/consume.html", items = list_consumes.items,
                             next_url=next_url, prev_url=prev_url,
