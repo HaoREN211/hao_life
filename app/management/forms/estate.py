@@ -8,7 +8,7 @@ from app.management.forms.movie import RenderForm
 from wtforms import StringField, SubmitField, SelectField, HiddenField, DecimalField, BooleanField, DateField
 from wtforms.validators import DataRequired, ValidationError, Length
 from app.models.country import District
-from app.models.estate import Estate, BuildingType, BuildingProperty, Building
+from app.models.estate import Estate, BuildingType, BuildingProperty, Building, BuildingOwner
 from app.models.enterprise import Enterprise
 
 class EstateCreateForm(RenderForm):
@@ -129,8 +129,11 @@ class BuildingCreateForm(RenderForm):
                           render_kw={"class": "select-control"})
     estate_id = SelectField("小区", coerce=int, choices=[(0, " ")], default=0,
                           render_kw={"class": "select-control"})
+    owner_id = SelectField("属性", coerce=int, choices=[(0, " ")], default=0,
+                            render_kw={"class": "select-control"})
     build_time = DateField("建造时间", render_kw={"type":"date"})
     lottery_time = DateField("摇号时间", render_kw={"type": "date"})
+    link = StringField("网页链接", validators=[Length(max=500)])
     create_submit = SubmitField("添加", render_kw={"class":"btn btn-xs btn-success"})
     cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
                                           "data-dismiss": "modal",
@@ -141,6 +144,7 @@ class BuildingCreateForm(RenderForm):
         self.property_id.choices.extend([(x.id, x.name) for x in BuildingProperty.query.all()])
         self.type_id.choices.extend([(x.id, x.name) for x in BuildingType.query.all()])
         self.estate_id.choices.extend([(x.id, x.name) for x in Estate.query.all()])
+        self.owner_id.choices.extend([(x.id, x.name) for x in BuildingOwner.query.all()])
 
     def validate_name(self, name):
         list_building = Building.query.filter_by(name=str(name.data).strip()).all()
@@ -161,8 +165,11 @@ class BuildingModifyForm(RenderForm):
                               render_kw={"class": "select-control"})
     estate_id = SelectField("小区", coerce=int, choices=[(0, " ")], default=0,
                             render_kw={"class": "select-control"})
+    owner_id = SelectField("属性", coerce=int, choices=[(0, " ")], default=0,
+                            render_kw={"class": "select-control"})
     build_time = DateField("建造时间", render_kw={"type": "date"})
     lottery_time = DateField("摇号时间", render_kw={"type": "date"})
+    link = StringField("网页链接", validators=[Length(max=500)])
     modify_submit = SubmitField("修改", render_kw={"class":"btn btn-xs btn-success"})
     cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
                                           "data-dismiss": "modal",
@@ -173,11 +180,41 @@ class BuildingModifyForm(RenderForm):
         self.property_id.choices.extend([(x.id, x.name) for x in BuildingProperty.query.all()])
         self.type_id.choices.extend([(x.id, x.name) for x in BuildingType.query.all()])
         self.estate_id.choices.extend([(x.id, x.name) for x in Estate.query.all()])
+        self.owner_id.choices.extend([(x.id, x.name) for x in BuildingOwner.query.all()])
 
     def validate_name(self, name):
         list_building = Building.query.filter_by(name=str(name.data).strip()).all()
         if list_building and (len(list_building) > 0):
             list_id = [x.id for x in list_building]
+            list_id = [0 if int(x)==int(self.id.data) else 1 for x in list_id]
+            if sum(list_id) > 0:
+                raise ValidationError('修改失败：《' + str(name.data) + '》已经存在，请挑选另外一个名字。')
+
+
+class BuildingOwnerCreateForm(RenderForm):
+    name = StringField("名称", validators=[DataRequired(), Length(max=100)])
+    create_submit = SubmitField("添加", render_kw={"class":"btn btn-xs btn-success"})
+    cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
+                                          "data-dismiss": "modal",
+                                          "type": "button"})
+
+    def validate_name(self, name):
+        list_building_owner = BuildingOwner.query.filter_by(name=str(name.data).strip()).all()
+        if list_building_owner and (len(list_building_owner) > 0):
+            raise ValidationError('添加失败：《' + str(self.name.data) + '》已经存在，请挑选另外一个名字。')
+
+class BuildingOwnerModifyForm(RenderForm):
+    id = HiddenField("主键")
+    name = StringField("名称", validators=[DataRequired(), Length(max=100)], default="  ")
+    modify_submit = SubmitField("修改", render_kw={"class":"btn btn-xs btn-success"})
+    cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
+                                          "data-dismiss": "modal",
+                                          "type": "button"})
+
+    def validate_name(self, name):
+        list_building_owner = BuildingOwner.query.filter_by(name=str(name.data).strip()).all()
+        if list_building_owner and (len(list_building_owner) > 0):
+            list_id = [x.id for x in list_building_owner]
             list_id = [0 if int(x)==int(self.id.data) else 1 for x in list_id]
             if sum(list_id) > 0:
                 raise ValidationError('修改失败：《' + str(name.data) + '》已经存在，请挑选另外一个名字。')

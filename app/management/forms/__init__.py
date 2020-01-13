@@ -5,8 +5,12 @@
 from app import db
 from flask import redirect, url_for, flash
 from datetime import datetime
-from app.management.forms.estate import EstateModifyForm, BuildingTypeModifyForm, BuildingPropertyModifyForm, BuildingModifyForm
+from app.management.forms.estate import EstateModifyForm, BuildingTypeModifyForm, BuildingPropertyModifyForm, BuildingModifyForm, BuildingOwnerModifyForm
 from app.management.forms.work.salary import SalaryModifyForm
+from app.management.forms.general.upload import FileForm
+import os
+from werkzeug.utils import secure_filename
+from app.tools import get_file_type
 
 # 重新构造修改的表单
 def modify_form_constructor(items, temp_form):
@@ -23,6 +27,8 @@ def modify_form_constructor(items, temp_form):
             modify_form = BuildingModifyForm()
         elif temp_form == "SalaryModifyForm":
             modify_form = SalaryModifyForm()
+        elif temp_form == "BuildingOwnerModifyForm":
+            modify_form = BuildingOwnerModifyForm()
 
         for current_key in modify_form.__dict__.keys():
             if str(current_key).startswith("_"):
@@ -88,3 +94,26 @@ def create_db_row(add_form, db_table, url):
     db.session.add(db_table)
     flash("添加成功")
     return redirect(url_for(url))
+
+
+# 上传文件
+def upload_form_constructor(items):
+    list_upload_form = {}
+    for current_item in items.items:
+        temp_form = FileForm()
+        temp_form.id.data = current_item.id
+        list_upload_form[current_item.id] = temp_form
+    return list_upload_form
+
+# 修改保存的文件
+def modify_upload(current_file, temp_upload_form, folder):
+    file_name = secure_filename(current_file.filename)
+    current_file_type = get_file_type(file_name)
+    save_path = "app/static/images/"+folder+"/" + str(temp_upload_form.id.data) + "." + str(current_file_type)
+    save_folder_path = os.path.dirname(save_path)
+    if os.path.exists(save_path):
+        os.remove(save_path)
+    if not os.path.exists(save_folder_path):
+        os.makedirs(save_folder_path)
+    current_file.save(save_path)
+    return "/static/images/"+folder+"/" + str(temp_upload_form.id.data) + "." + str(current_file_type)

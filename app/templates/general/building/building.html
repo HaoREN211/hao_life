@@ -11,7 +11,7 @@
 
     <table class="table table-hover">
         <thead>
-        <tr><th>面积</th><th>总价</th>
+        <tr><th>面积</th><th>总价</th><th>小区</th><th>户型</th><th>类型</th><th>地址</th><th>其他</th><th>链接</th>
             {% if current_user.is_authenticated and current_user.is_admin %}
                 <th>管理</th>
             {% endif %}
@@ -19,12 +19,49 @@
         </thead>
         {% for item in items %}
             <tr>
-                <td>{{ item.surface }}</td>
-                <td>{{ item.total_price }}</td>
+                <td data-toggle="modal" data-target="#myModalShow{{ item.id }}" style="cursor: pointer">{{ item.surface }}</td>
+                <td data-toggle="modal" data-target="#myModalShow{{ item.id }}" style="cursor: pointer">{{ item.total_price }}</td>
+                <td data-toggle="modal" data-target="#myModalShow{{ item.id }}" style="cursor: pointer">
+                    {% if item.estate %}
+                        {% if item.estate.enterprise %}
+                            {{ item.estate.enterprise.short_name }}
+                        {% endif %}
+                        {{ item.estate.name }}
+                    {% endif %}
+                </td>
+                <td data-toggle="modal" data-target="#myModalShow{{ item.id }}" style="cursor: pointer">
+                    {% if item.type %}
+                        {{ item.type.name }}
+                    {% endif %}
+                </td>
+                <td data-toggle="modal" data-target="#myModalShow{{ item.id }}" style="cursor: pointer">
+                    {% if item.property %}
+                        {{ item.property.name }}
+                    {% endif %}
+                </td>
+                <td data-toggle="modal" data-target="#myModalShow{{ item.id }}" style="cursor: pointer">
+                    {% if item.estate %}
+                        {% if item.estate.district %}
+                            {{ item.estate.district.name }}
+                        {% endif %}
+                        {{ item.estate.address }}
+                    {% endif %}
+                </td>
+                <td data-toggle="modal" data-target="#myModalShow{{ item.id }}" style="cursor: pointer">
+                    {% if item.owner %}
+                        {{ item.owner.name }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if item.link %}
+                        <a href="{{ item.link }}" target="_blank">前往</a>
+                    {% endif %}
+                </td>
                 {% if current_user.is_authenticated and current_user.is_admin %}
                     <td>
                         {% include 'general/wtf_quick_form_modify.html' %}
                         {% include 'general/wtf_quick_form_delete.html' %}
+                        {% include 'general/wtf_quick_form_upload_image.html' %}
                     </td>
                 {% endif %}
             </tr>
@@ -45,6 +82,70 @@
             </li>
         </ul>
     </nav>
+
+    {% for item in items %}
+        <div class="modal fade" id="myModalShow{{ item.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                        </button>
+                        {% if item.estate %}
+                            <h4 class="modal-title" id="myModalCvMainAttributeLabel">
+                            {% if item.estate.enterprise %}
+                                {{ item.estate.enterprise.short_name }}
+                            {% endif %}
+                            {{ item.estate.name }}</h4>
+                        {% endif %}
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    {% if item.image %}
+                                            <img src="{{ item.image }}" style="width: 100%">
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <span>面积:{{ item.surface }}平米</span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>总价:{{ item.total_price }}万元</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <span>
+                                    地址:
+                                        {% if item.estate %}
+                                            {% if item.estate.district %}
+                                                {% if item.estate.district.city %}
+                                                    {% if item.estate.district.city.province %}
+                                                        {% if item.estate.district.city.province.country %}
+                                                            {{ item.estate.district.city.province.country.name }}
+                                                        {% endif %}
+                                                        {{ item.estate.district.province.name }}
+                                                    {% endif %}
+                                                    {{ item.estate.district.city.name }}
+                                                {% endif %}
+                                                {{ item.estate.district.name }}
+                                            {% endif %}
+                                            {{ item.estate.address }}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+
+
 {% endblock %}
 
 

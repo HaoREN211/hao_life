@@ -23,3 +23,8 @@ def add_zero_for_month_day_hour_minute(time_unit):
     if len(str(time_unit)) == 1:
         time_unit = "0"+str(time_unit)
     return str(time_unit)
+
+
+# 获取文件类型
+def get_file_type(file_name):
+    return str(file_name).rsplit('.', 1)[1]
