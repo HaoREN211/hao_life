@@ -16,6 +16,8 @@ from app.management.routes.movie import flash_form_errors
 from app.models.estate import Estate, BuildingType, BuildingProperty, Building, BuildingOwner
 from app.management.forms import modify_form_constructor, modify_db, create_db_row, upload_form_constructor, modify_upload
 from sqlalchemy import desc
+from os.path import exists
+from os import remove
 
 
 # 小区列表
@@ -177,6 +179,11 @@ def buildings():
                     return modify_db(temp_modify_form, Building, 'management.buildings')
             if delete_form.delete_submit.data and delete_form.validate_on_submit():
                 to_delete = Building.query.filter_by(id=int(delete_form.id.data)).first()
+                to_delete_file = to_delete.image
+                if to_delete_file is not None and len(str(to_delete_file).strip())>0:
+                    to_delete_file = "app/"+to_delete_file
+                    if exists(to_delete_file):
+                        remove(to_delete_file)
                 db.session.delete(to_delete)
                 flash("删除成功")
                 return redirect(url_for("management.buildings"))
