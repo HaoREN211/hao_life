@@ -11,7 +11,7 @@
 
     <table class="table table-hover">
         <thead>
-        <tr><th>面积</th><th>总价</th><th>小区</th><th>户型</th><th>类型</th><th>地址</th><th>其他</th><th>链接</th>
+        <tr><th>面积</th><th>总价</th><th>小区</th><th>户型</th><th>类型</th><th>其他</th><th>链接</th>
             {% if current_user.is_authenticated and current_user.is_admin %}
                 <th>管理</th>
             {% endif %}
@@ -37,14 +37,6 @@
                 <td data-toggle="modal" data-target="#myModalShow{{ item.id }}" style="cursor: pointer">
                     {% if item.property %}
                         {{ item.property.name }}
-                    {% endif %}
-                </td>
-                <td data-toggle="modal" data-target="#myModalShow{{ item.id }}" style="cursor: pointer">
-                    {% if item.estate %}
-                        {% if item.estate.district %}
-                            {{ item.estate.district.name }}
-                        {% endif %}
-                        {{ item.estate.address }}
                     {% endif %}
                 </td>
                 <td data-toggle="modal" data-target="#myModalShow{{ item.id }}" style="cursor: pointer">
@@ -91,11 +83,26 @@
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
                         </button>
                         {% if item.estate %}
-                            <h4 class="modal-title" id="myModalCvMainAttributeLabel">
+                            <p><h4 class="modal-title" id="myModalCvMainAttributeLabel">
                             {% if item.estate.enterprise %}
                                 {{ item.estate.enterprise.short_name }}
                             {% endif %}
-                            {{ item.estate.name }}</h4>
+                            {{ item.estate.name }}</h4></p>
+                            {% if item.estate %}
+                                {% if item.estate.district %}
+                                    {% if item.estate.district.city %}
+                                        {% if item.estate.district.city.province %}
+                                            {% if item.estate.district.city.province.country %}
+                                                {{ item.estate.district.city.province.country.name }}
+                                            {% endif %}
+                                            {{ item.estate.district.province.name }}
+                                        {% endif %}
+                                        {{ item.estate.district.city.name }}
+                                    {% endif %}
+                                    {{ item.estate.district.name }}
+                                {% endif %}
+                                {{ item.estate.address }}
+                            {% endif %}
                         {% endif %}
                     </div>
                     <div class="modal-body">
@@ -105,36 +112,6 @@
                                     {% if item.image %}
                                             <img src="{{ item.image }}" style="width: 100%">
                                     {% endif %}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <span>面积:{{ item.surface }}平米</span>
-                                </div>
-                                <div class="col-sm-3">
-                                    <span>总价:{{ item.total_price }}万元</span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <span>
-                                    地址:
-                                        {% if item.estate %}
-                                            {% if item.estate.district %}
-                                                {% if item.estate.district.city %}
-                                                    {% if item.estate.district.city.province %}
-                                                        {% if item.estate.district.city.province.country %}
-                                                            {{ item.estate.district.city.province.country.name }}
-                                                        {% endif %}
-                                                        {{ item.estate.district.province.name }}
-                                                    {% endif %}
-                                                    {{ item.estate.district.city.name }}
-                                                {% endif %}
-                                                {{ item.estate.district.name }}
-                                            {% endif %}
-                                            {{ item.estate.address }}
-                                        {% endif %}
-                                    </span>
                                 </div>
                             </div>
                         </div>
