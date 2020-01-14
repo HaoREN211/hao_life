@@ -11,7 +11,7 @@
 
     <table class="table table-hover">
         <thead>
-        <tr><th>面积</th><th>总价</th><th>建成时间</th><th>小区</th><th>户型</th><th>类型</th><th>其他</th><th>链接</th>
+        <tr><th>面积</th><th>总价</th><th>单价</th><th>总楼层</th><th>建成时间</th><th>小区</th><th>户型</th><th>类型</th><th>其他</th><th>链接</th>
             {% if current_user.is_authenticated and current_user.is_admin %}
                 <th>管理</th>
             {% endif %}
@@ -21,6 +21,12 @@
             <tr>
                 <td data-toggle="modal" data-target="#myModalShow{{ item.id }}" style="cursor: pointer">{{ item.surface }}平米</td>
                 <td data-toggle="modal" data-target="#myModalShow{{ item.id }}" style="cursor: pointer">{{ item.total_price }}万元</td>
+                <td data-toggle="modal" data-target="#myModalShow{{ item.id }}" style="cursor: pointer">{{ item.unit_price }}元</td>
+                <td data-toggle="modal" data-target="#myModalShow{{ item.id }}" style="cursor: pointer">
+                    {% if item.total_level %}
+                        {{ item.total_level }}层
+                    {% endif %}
+                </td>
                 <td data-toggle="modal" data-target="#myModalShow{{ item.id }}" style="cursor: pointer">
                     {% if item.build_time %}
                         {{ item.build_time.year }}年

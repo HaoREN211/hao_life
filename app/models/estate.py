@@ -39,8 +39,9 @@ class Building(db.Model):
     __table_args__ = {'comment': '房屋信息'}
     id = db.Column(BIGINT(unsigned=True), primary_key=True, comment="房产主键")
     surface = db.Column(db.DECIMAL(6, 2), nullable=False, comment="房屋面积")
-    unit_price = db.Column(db.DECIMAL(6, 2), nullable=True, comment="单价")
+    unit_price = db.Column(db.DECIMAL(8, 2), nullable=True, comment="单价")
     total_price = db.Column(db.DECIMAL(6, 2), nullable=False, comment="总价")
+    total_level = db.Column(db.Integer, nullable=True, comment="总楼层")
     has_elevator = db.Column(db.Boolean, nullable=True, comment="是否有电梯")
     build_time = db.Column(db.Date, nullable=True, comment="建造时间")
     lottery_time = db.Column(db.Date, nullable=True, comment="摇号时间")
@@ -55,6 +56,10 @@ class Building(db.Model):
     type = db.relationship("BuildingType", backref="buildings", foreign_keys=[type_id])
     property = db.relationship("BuildingProperty", backref="buildings", foreign_keys=[property_id])
     owner = db.relationship("BuildingOwner", backref="buildings", foreign_keys=[owner_id])
+
+    # 更新房屋单价
+    def upgrade_unit_price(self):
+        self.unit_price = float(self.total_price)*float(10000)/float(self.surface)
 
 class BuildingType(db.Model):
     __table_args__ = {'comment': '房屋户型'}

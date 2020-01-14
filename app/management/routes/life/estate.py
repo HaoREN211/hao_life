@@ -170,13 +170,19 @@ def buildings():
                 if not add_form.validate():
                     flash_form_errors(add_form)
                 else:
-                    return create_db_row(add_form, Building(), "management.buildings")
+                    info_create = create_db_row(add_form, Building(), "management.buildings")
+                    added_building = Building.query.order_by(Building.id.desc()).first()
+                    added_building.upgrade_unit_price()
+                    return info_create
             if temp_modify_form.modify_submit.data and temp_modify_form.is_submitted():
                 if not temp_modify_form.validate():
                     temp_error_form = temp_modify_form
                     flash_form_errors(temp_modify_form)
                 else:
-                    return modify_db(temp_modify_form, Building, 'management.buildings')
+                    info_modify = modify_db(temp_modify_form, Building, 'management.buildings')
+                    modified_building = Building.query.filter_by(id=int(temp_modify_form.id.data)).first()
+                    modified_building.upgrade_unit_price()
+                    return info_modify
             if delete_form.delete_submit.data and delete_form.validate_on_submit():
                 to_delete = Building.query.filter_by(id=int(delete_form.id.data)).first()
                 to_delete_file = to_delete.image

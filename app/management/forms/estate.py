@@ -119,9 +119,9 @@ class BuildingPropertyModifyForm(RenderForm):
 class BuildingCreateForm(RenderForm):
     surface = DecimalField("面积", validators=[DataRequired(message="请填写房屋面积")],
                            render_kw={"type":"number", "step":"0.01"})
-    unit_price = StringField("单价（单位：元）", render_kw={"type": "number", "step": "0.01"})
     total_price = DecimalField("总价（单位：万元）", validators=[DataRequired("请填写房屋总价")],
                                render_kw={"type":"number", "step":"0.01"})
+    total_level = StringField("总楼层", render_kw={"type": "number", "step": "1"})
     has_elevator = BooleanField("是否有电梯")
     type_id = SelectField("户型", coerce=int, choices=[(0, " ")], default=0,
                                 render_kw={"class": "select-control"})
@@ -156,8 +156,8 @@ class BuildingModifyForm(RenderForm):
     id = HiddenField("主键")
     surface = DecimalField("面积", validators=[DataRequired(message="请填写房屋面积")],
                            render_kw={"type": "number", "step": "0.01"})
-    unit_price = StringField("单价（单位：元）", render_kw={"type":"number", "step":"0.01"})
     total_price = DecimalField("总价（单位：万元）", validators=[DataRequired()], render_kw={"type":"number", "step":"0.01"})
+    total_level = StringField("总楼层", render_kw={"type": "number", "step": "1"})
     has_elevator = BooleanField("是否有电梯")
     type_id = SelectField("户型", coerce=int, choices=[(0, " ")], default=0,
                           render_kw={"class": "select-control"})
