@@ -109,7 +109,7 @@ def upload_form_constructor(items):
 def modify_upload(current_file, temp_upload_form, folder):
     file_name = secure_filename(current_file.filename)
     current_file_type = get_file_type(file_name)
-    save_path = "app/static/images/"+folder+"/" + str(temp_upload_form.id.data) + "." + str(current_file_type)
+    save_path = "/root/hao_life/app/static/images/"+folder+"/" + str(temp_upload_form.id.data) + "." + str(current_file_type)
     save_folder_path = os.path.dirname(save_path)
     if os.path.exists(save_path):
         os.remove(save_path)

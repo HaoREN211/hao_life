@@ -181,7 +181,7 @@ def buildings():
                 to_delete = Building.query.filter_by(id=int(delete_form.id.data)).first()
                 to_delete_file = to_delete.image
                 if to_delete_file is not None and len(str(to_delete_file).strip())>0:
-                    to_delete_file = "app/"+to_delete_file
+                    to_delete_file = "/root/hao_life/app/"+to_delete_file
                     if exists(to_delete_file):
                         remove(to_delete_file)
                 db.session.delete(to_delete)
