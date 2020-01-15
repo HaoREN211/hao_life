@@ -3,6 +3,8 @@
 # 时间：2020/1/8 15:27
 # IDE：PyCharm
 
+import re
+
 def get_standard_name(new_name):
     return str(new_name).strip() if (
         (new_name is not None) and len(str(new_name).strip()) > 0) else None
@@ -28,3 +30,11 @@ def add_zero_for_month_day_hour_minute(time_unit):
 # 获取文件类型
 def get_file_type(file_name):
     return str(file_name).rsplit('.', 1)[1]
+
+
+# 字符串是否是时间戳
+def is_timestamp(string):
+    pattern = re.compile("^[1-2][0-9]{3}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$")
+    if pattern.match(str(string)):
+        return True
+    return False

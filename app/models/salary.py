@@ -6,6 +6,7 @@
 from app import db
 from sqlalchemy.dialects.mysql import BIGINT
 from datetime import datetime
+from sqlalchemy.ext.hybrid import hybrid_property
 
 
 class Position(db.Model):
@@ -31,6 +32,10 @@ class WorkExperience(db.Model):
 
     enterprise = db.relation("Enterprise", backref="work_experiences", foreign_keys=[enterprise_id])
     position = db.relation("Position", backref="work_experiences", foreign_keys=[position_id])
+
+    @hybrid_property
+    def salary_cnt(self):
+        return len(self.salaries)
 
 
 class Salary(db.Model):

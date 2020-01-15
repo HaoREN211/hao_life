@@ -92,6 +92,17 @@ class District(db.Model):
     province = db.relationship("Province", backref="districts", foreign_keys=[province_id])
     country = db.relationship("Country", backref="districts", foreign_keys=[country_id])
 
+    @hybrid_property
+    def estate_cnt(self):
+        return len(self.estates)
+
+    @hybrid_property
+    def building_cnt(self):
+        list_building_cnt_of_estate = [x.building_cnt for x in self.estates]
+        if list_building_cnt_of_estate:
+            return sum(list_building_cnt_of_estate)
+        return 0
+
     # 更新区域的名称
     def update_name(self, new_name):
         new_name_standard = get_standard_name(new_name)

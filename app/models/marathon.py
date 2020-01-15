@@ -22,5 +22,7 @@ class Marathon(db.Model):
     apply_end_time = db.Column(db.DateTime, nullable=True, comment="报名结束时间")
     match_start_time = db.Column(db.DateTime, nullable=True, comment="比赛开始时间")
     match_end_time = db.Column(db.DateTime, nullable=True, comment="比赛结束时间")
-
+    is_applied = db.Column(db.Boolean, nullable=True, comment="是否报名")
     is_finished = db.Column(db.Boolean, nullable=True, comment="是否完赛")
+
+    district = db.relationship("District", backref="marathons", foreign_keys=[district_id])

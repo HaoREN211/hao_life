@@ -11,16 +11,77 @@
 
     <table class="table table-hover">
         <thead>
-        <tr><th>户型</th><th>关联房源数量</th>
+        <tr><th>马拉松</th>
+            <th>距离</th>
+            <th>报名时间</th>
+            <th>比赛时间</th>
+            <th>比赛地点</th>
+            <th>报名</th>
+            <th>完赛</th>
             {% if current_user.is_authenticated and current_user.is_admin %}
                 <th>管理</th>
             {% endif %}
         </tr>
         </thead>
         {% for item in items %}
-            <tr>
+            <tr style="cursor: pointer">
                 <td>{{ item.name }}</td>
-                <td>{{ item.building_cnt }}</td>
+                <td>{{ item.distance }}公里</td>
+                <td>
+                    {% if item.apply_start_time.year and item.apply_start_time.minute==0 %}
+                        {{ item.apply_start_time.date() }}
+                    {% else %}
+                        {{ item.apply_start_time }}
+                    {% endif %}
+
+                    {% if item.apply_start_time != item.apply_end_time %}
+                        到
+                        {% if item.apply_end_time.year and item.apply_end_time.minute==0 %}
+                            {{ item.apply_end_time.date() }}
+                        {% else %}
+                            {{ item.apply_end_time }}
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if item.match_start_time.year and item.match_start_time.minute==0 %}
+                        {{ item.match_start_time.date() }}
+                    {% else %}
+                        {{ item.match_start_time }}
+                    {% endif %}
+
+                    {% if item.match_start_time != item.match_end_time %}
+                        到
+                        {% if item.match_end_time.year and item.match_end_time.minute==0 %}
+                            {{ item.match_end_time.date() }}
+                        {% else %}
+                            {{ item.match_end_time }}
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if item.district %}
+                        {% if item.district.city %}
+                            {{ item.district.city.name }}
+                        {% endif %}
+                        {{ item.district.name }}
+                    {% endif %}
+                    {{ item.address }}
+                </td>
+                <td>
+                    {% if item.is_applied %}
+                        是
+                    {% else %}
+                        否
+                    {% endif %}
+                </td>
+                <td>
+                    {% if item.is_finished %}
+                        是
+                    {% else %}
+                        否
+                    {% endif %}
+                </td>
                 {% if current_user.is_authenticated and current_user.is_admin %}
                     <td>
                         {% include 'general/wtf_quick_form_modify.html' %}

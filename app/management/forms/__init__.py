@@ -6,11 +6,12 @@ from app import db
 from flask import redirect, url_for, flash
 from datetime import datetime
 from app.management.forms.estate import EstateModifyForm, BuildingTypeModifyForm, BuildingPropertyModifyForm, BuildingModifyForm, BuildingOwnerModifyForm
+from app.management.forms.life.marathon import MarathonModifyForm
 from app.management.forms.work.salary import SalaryModifyForm
 from app.management.forms.general.upload import FileForm
 import os
 from werkzeug.utils import secure_filename
-from app.tools import get_file_type
+from app.tools import get_file_type, is_timestamp, reform_datetime_local_with_datetime
 
 # 重新构造修改的表单
 def modify_form_constructor(items, temp_form):
@@ -29,6 +30,9 @@ def modify_form_constructor(items, temp_form):
             modify_form = SalaryModifyForm()
         elif temp_form == "BuildingOwnerModifyForm":
             modify_form = BuildingOwnerModifyForm()
+        elif temp_form == "MarathonModifyForm":
+            modify_form = MarathonModifyForm()
+
 
         for current_key in modify_form.__dict__.keys():
             if str(current_key).startswith("_"):
@@ -42,7 +46,12 @@ def modify_form_constructor(items, temp_form):
                 target_id = 0 if target_id is None else target_id
                 modify_form.__getattribute__(current_key).data = target_id
             else:
-                modify_form.__getattribute__(current_key).data = current_item.__getattribute__(current_key)
+                # 重新构造表单时遇到了日期分钟数的数据
+                current_key_value = current_item.__getattribute__(current_key)
+                if isinstance(current_key_value, datetime):
+                    modify_form.__getattribute__(current_key).data = reform_datetime_local_with_datetime(current_key_value)
+                else:
+                    modify_form.__getattribute__(current_key).data = current_key_value
         list_modify_form[current_item.id] = modify_form
     return list_modify_form
 

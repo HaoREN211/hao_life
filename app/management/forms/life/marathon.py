@@ -16,15 +16,16 @@ class MarathonCreateForm(RenderForm):
     name = StringField("名称", validators=[DataRequired(), Length(max=100)])
 
     distance = StringField("距离", render_kw={"type":"number", "step":"0.01"})
-    address = StringField("地址", validators=[Length(max=100)])
     district_id = SelectField("区域所在", coerce=int, choices=[(0, " ")], default=0,
                               render_kw={"class": "select-control"})
+    address = StringField("地址", validators=[Length(max=100)])
     plate_id = SelectField("报名平台", coerce=int, choices=[(0, " ")], default=0,
                               render_kw={"class": "select-control"})
     apply_start_time = StringField("报名开始时间", render_kw={"type":"datetime-local"})
     apply_end_time = StringField("报名结束时间", render_kw={"type": "datetime-local"})
     match_start_time = StringField("比赛开始时间", render_kw={"type": "datetime-local"})
     match_end_time = StringField("比赛结束时间", render_kw={"type": "datetime-local"})
+    is_applied = BooleanField("是否报名")
     is_finished = BooleanField("是否完赛")
 
 
@@ -48,15 +49,16 @@ class MarathonModifyForm(RenderForm):
     name = StringField("名称", validators=[DataRequired(), Length(max=100)], default="  ")
 
     distance = StringField("距离", render_kw={"type": "number", "step": "0.01"})
-    address = StringField("地址", validators=[Length(max=100)])
     district_id = SelectField("区域所在", coerce=int, choices=[(0, " ")], default=0,
                               render_kw={"class": "select-control"})
+    address = StringField("地址", validators=[Length(max=100)])
     plate_id = SelectField("报名平台", coerce=int, choices=[(0, " ")], default=0,
                            render_kw={"class": "select-control"})
     apply_start_time = StringField("报名开始时间", render_kw={"type": "datetime-local"})
     apply_end_time = StringField("报名结束时间", render_kw={"type": "datetime-local"})
     match_start_time = StringField("比赛开始时间", render_kw={"type": "datetime-local"})
     match_end_time = StringField("比赛结束时间", render_kw={"type": "datetime-local"})
+    is_applied = BooleanField("是否报名")
     is_finished = BooleanField("是否完赛")
 
     modify_submit = SubmitField("修改", render_kw={"class":"btn btn-xs btn-success"})
