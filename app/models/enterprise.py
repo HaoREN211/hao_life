@@ -4,7 +4,7 @@
 # IDE：PyCharm
 
 from app import db
-from sqlalchemy.dialects.mysql import BIGINT
+from sqlalchemy.dialects.mysql import BIGINT, INTEGER
 from sqlalchemy.ext.hybrid import hybrid_property
 
 class Enterprise(db.Model):
@@ -14,9 +14,10 @@ class Enterprise(db.Model):
     founded_time = db.Column(db.Date, nullable=False, comment="创立时间")
     president_id = db.Column("person_id", BIGINT(unsigned=True), db.ForeignKey("person.id"), nullable=True, comment="总裁主键")
     headquarter_id = db.Column("district_id", BIGINT(unsigned=True), db.ForeignKey("district.id"), nullable=True, comment="总部主键")
+    rank_2019 = db.Column("rank_2019", INTEGER(unsigned=True), unique=True, nullable=True, comment="公司2019排名")
 
-    president = db.ForeignKey("Person", backref="enterprises", foreign_keys=[president_id])
-    headquarter = db.ForeignKey("District", backref="enterprises", foreign_keys=[headquarter_id])
+    president = db.relationship("Person", backref="enterprises", foreign_keys=[president_id])
+    headquarter = db.relationship("District", backref="enterprises", foreign_keys=[headquarter_id])
 
     @hybrid_property
     def work_experience_cnt(self):

@@ -3,16 +3,18 @@
 # @FileName: salary.py
 # @Software: PyCharm
 
+from operator import and_
+
 from flask import render_template, flash, request, url_for, redirect
 from flask_login import current_user
+
 from app import db
 from app.management import bp
-from app.management.forms.movie import MovieDeleteForm
-from app.management.routes.movie import flash_form_errors
-from app.models.salary import Salary
-from app.management.forms.work.salary import SalaryCreateForm, SalaryModifyForm
 from app.management.forms import modify_form_constructor, modify_db, create_db_row
-from operator import and_
+from app.management.forms.movie import MovieDeleteForm
+from app.management.forms.work.salary import SalaryCreateForm, SalaryModifyForm
+from app.management.routes.entertainment.movie import flash_form_errors
+from app.models.salary import Salary
 
 
 @bp.route('/salaries', methods=['GET', 'POST'])

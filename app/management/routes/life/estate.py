@@ -3,21 +3,25 @@
 # 时间：2020/1/10 11:15
 # IDE：PyCharm
 
+from os import remove
+from os.path import exists
+
 from flask import render_template, flash, request, url_for, redirect
 from flask_login import current_user
+from sqlalchemy import desc
+
 from app import db
 from app.management import bp
-from app.management.forms.general.upload import FileForm
+from app.management.forms import modify_form_constructor, modify_db, create_db_row, upload_form_constructor, \
+    modify_upload
 from app.management.forms.estate import (EstateCreateForm, EstateModifyForm, BuildingTypeCreateForm,
                                          BuildingTypeModifyForm, BuildingPropertyCreateForm, BuildingPropertyModifyForm,
-                                         BuildingCreateForm, BuildingModifyForm, BuildingOwnerCreateForm, BuildingOwnerModifyForm)
+                                         BuildingCreateForm, BuildingModifyForm, BuildingOwnerCreateForm,
+                                         BuildingOwnerModifyForm)
+from app.management.forms.general.upload import FileForm
 from app.management.forms.movie import MovieDeleteForm
-from app.management.routes.movie import flash_form_errors
+from app.management.routes.entertainment.movie import flash_form_errors
 from app.models.estate import Estate, BuildingType, BuildingProperty, Building, BuildingOwner
-from app.management.forms import modify_form_constructor, modify_db, create_db_row, upload_form_constructor, modify_upload
-from sqlalchemy import desc
-from os.path import exists
-from os import remove
 
 
 # 小区列表

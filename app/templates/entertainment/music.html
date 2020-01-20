@@ -1,0 +1,230 @@
+{% extends '_base.html' %}
+
+{% block app_content %}
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/select2.min.css') }}" />
+
+    {% if current_user.is_authenticated and current_user.is_admin %}
+        <input type="button" class="btn btn-xs btn-success" value="添加音乐"
+            data-toggle="modal" data-target="#myModalCreate">
+        <div class="modal fade" id="myModalCreate" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                        </button>
+                        <h4 class="modal-title" id="myModalCvMainAttributeLabel">
+                            添加新音乐
+                        </h4>
+                    </div>
+
+                    <div class="modal-body">
+                        {% if add_form %}
+                            <form method="post" role="form">
+                                {{ add_form.csrf_token() }}
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            {{ add_form.name.label }}
+                                            {{ add_form.name(class="form-control") }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ add_form.issue_date.label }}
+                                            {{ add_form.issue_date(class="form-control") }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ add_form.lyrics_id.label }}
+                                            {{ add_form.lyrics_id(class="form-control") }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ add_form.composer_id.label }}
+                                            {{ add_form.composer_id(class="form-control") }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ add_form.singer_id.label }}
+                                            {{ add_form.singer_id(class="form-control") }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ add_form.album_id.label }}
+                                            {{ add_form.album_id(class="form-control") }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ add_form.music_type_id.label }}
+                                            {{ add_form.music_type_id(class="form-control") }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        {{ add_form.create_submit }} {{ add_form.cancel }}
+                                    </div>
+                                </div>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        {% for item in items %}
+            <div class="modal fade" id="myModalCinema{{ item.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                            </button>
+                            <h4 class="modal-title" id="myModalCvMainAttributeLabel">
+                                修改音乐《{{ item.name }}》
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            {% if modify_form %}
+                                <form method="post" role="form">
+                                    {{  modify_form[item.id].csrf_token() }}
+                                    {{ modify_form[item.id].id }}
+
+                                    <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            {{ modify_form[item.id].name.label }}
+                                            {{ modify_form[item.id].name(class="form-control") }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ modify_form[item.id].issue_date.label }}
+                                            {{ modify_form[item.id].issue_date(class="form-control") }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ modify_form[item.id].lyrics_id.label }}
+                                            {{ modify_form[item.id].lyrics_id(class="form-control") }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ modify_form[item.id].composer_id.label }}
+                                            {{ modify_form[item.id].composer_id(class="form-control") }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ modify_form[item.id].singer_id.label }}
+                                            {{ modify_form[item.id].singer_id(class="form-control") }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ modify_form[item.id].album_id.label }}
+                                            {{ modify_form[item.id].album_id(class="form-control") }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {{ modify_form[item.id].music_type_id.label }}
+                                            {{ modify_form[item.id].music_type_id(class="form-control") }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        {{ modify_form[item.id].modify_submit }} {{ modify_form[item.id].cancel }}
+                                    </div>
+                                </div>
+                                </form>
+{#                                {{ wtf.quick_form(modify_form[item.id]) }}#}
+                            {% endif %}
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        {% endfor %}
+    {% endif %}
+
+
+    <table class="table table-hover">
+        <thead>
+        <tr><th>歌曲名</th><th>歌手</th><th>类型</th><th>专辑</th><th>发行时间</th>
+            {% if current_user.is_authenticated and current_user.is_admin %}
+                <th>管理</th>
+            {% endif %}
+        </tr>
+        </thead>
+        {% for item in items %}
+            <tr style="cursor: pointer">
+                <td>{{ item.name }}</td>
+                <td>{% if item.singer %}{{ item.singer.name }}{% endif %}</td>
+                <td>{% if item.type %}{{ item.type.name }}{% endif %}</td>
+                <td>{% if item.album %}{{ item.album.name }}{% endif %}</td>
+                <td>{% if item.issue_date %}{{ item.issue_date }}{% endif %}</td>
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                    <td>
+                        <input type="button" class="btn btn-xs btn-warning" value="修改"
+                            data-toggle="modal" data-target="#myModalCinema{{ item.id }}">
+                        {% include 'general/wtf_quick_form_delete.html' %}
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+
+    <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_url %} disabled{% endif %}">
+                <a href="{{ prev_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span> 上一页
+                </a>
+            </li>
+            <li class="next{% if not next_url %} disabled{% endif %}">
+                <a href="{{ next_url or '#' }}">
+                    下一页 <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endblock %}
+
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='js/select2.4.0.0.min.js') }}"></script>
+
+    <script type="application/javascript">
+        $(document).ready(function() {
+            $('.select-control').select2();
+
+            var list_object = document.getElementsByClassName("select2-container");
+            for (var i =0; i<list_object.length; i++) {
+                list_object[i].style.width = "100%";
+            }
+
+            {# https://blog.csdn.net/john1337/article/details/53315969 #}
+            $.fn.modal.Constructor.prototype.enforceFocus = function () { }
+        });
+    </script>
+{% endblock %}

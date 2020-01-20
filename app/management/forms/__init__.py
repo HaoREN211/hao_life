@@ -9,9 +9,10 @@ from app.management.forms.estate import EstateModifyForm, BuildingTypeModifyForm
 from app.management.forms.life.marathon import MarathonModifyForm
 from app.management.forms.work.salary import SalaryModifyForm
 from app.management.forms.general.upload import FileForm
+from app.management.forms.entertainment.music import MusicModifyForm, AlbumModifyForm, MusicTypeModifyForm
 import os
 from werkzeug.utils import secure_filename
-from app.tools import get_file_type, is_timestamp, reform_datetime_local_with_datetime
+from app.tools import get_file_type, reform_datetime_local_with_datetime, is_date, is_timestamp
 
 # 重新构造修改的表单
 def modify_form_constructor(items, temp_form):
@@ -32,7 +33,12 @@ def modify_form_constructor(items, temp_form):
             modify_form = BuildingOwnerModifyForm()
         elif temp_form == "MarathonModifyForm":
             modify_form = MarathonModifyForm()
-
+        elif temp_form == "MusicModifyForm":
+            modify_form = MusicModifyForm()
+        elif temp_form == "AlbumModifyForm":
+            modify_form = AlbumModifyForm()
+        elif temp_form =="MusicTypeModifyForm":
+            modify_form = MusicTypeModifyForm()
 
         for current_key in modify_form.__dict__.keys():
             if str(current_key).startswith("_"):
@@ -76,9 +82,19 @@ def modify_db(modify_form, db_model, url):
                 is_modified = True
                 current_item.__setattr__(current_key, target_id)
         else:
-            if current_item.__getattribute__(current_key) != modify_form.__getattribute__(current_key).data:
+            modify_form_value = modify_form.__getattribute__(current_key).data
+            if isinstance(modify_form_value, str):
+                if str(modify_form_value).strip() == "":
+                    modify_form_value = None
+                elif is_date(modify_form_value):
+                    # 如果表单中含有date格式的数据，因为表单传过来的数据类型是字符串，需要将数据类型从字符串转化为date
+                    modify_form_value = datetime.strptime(modify_form_value, "%Y-%m-%d").date()
+                elif is_timestamp(modify_form_value):
+                    # 如果表单中含有datetime格式的数据，因为表单传过来的数据类型是字符串，需要将数据类型从字符串转化为datetime
+                    modify_form_value = datetime.strptime(modify_form_value, "%Y-%m-%d %H:%M:%S")
+            if current_item.__getattribute__(current_key) != modify_form_value:
                 is_modified = True
-                current_item.__setattr__(current_key, modify_form.__getattribute__(current_key).data)
+                current_item.__setattr__(current_key, modify_form_value)
     if is_modified:
         if "update_time" in current_item.__dict__.keys():
             current_item.__setattr__("update_time", datetime.now())
@@ -99,7 +115,11 @@ def create_db_row(add_form, db_table, url):
             target_id = target_id if target_id > 0 else None
             db_table.__setattr__(current_key, target_id)
         else:
-            db_table.__setattr__(current_key, add_form.__getattribute__(current_key).data)
+            current_key_value = add_form.__getattribute__(current_key).data
+            if isinstance(current_key_value, str):
+                if str(current_key_value).strip() == "":
+                    current_key_value = None
+            db_table.__setattr__(current_key, current_key_value)
     db.session.add(db_table)
     flash("添加成功")
     return redirect(url_for(url))

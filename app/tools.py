@@ -35,6 +35,12 @@ def get_file_type(file_name):
 # 字符串是否是时间戳
 def is_timestamp(string):
     pattern = re.compile("^[1-2][0-9]{3}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$")
-    if pattern.match(str(string)):
+    if pattern.match(str(string).strip()):
+        return True
+    return False
+
+def is_date(string):
+    pattern = re.compile("^[1-2][0-9]{3}-[01][0-9]-[0-3][0-9]$")
+    if pattern.match(str(string).strip()):
         return True
     return False

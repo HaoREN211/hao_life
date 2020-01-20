@@ -10,7 +10,7 @@ from app import db
 from app.management import bp
 from app.management.forms.location.city import CityCreateForm, CityModifyForm
 from app.management.forms.movie import MovieDeleteForm
-from app.management.routes.movie import flash_form_errors
+from app.management.routes.entertainment.movie import flash_form_errors
 from app.models.country import City
 
 

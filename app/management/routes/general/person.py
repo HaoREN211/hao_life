@@ -3,15 +3,17 @@
 # 时间：2020/1/6 17:24
 # IDE：PyCharm
 
-from app import db
-from flask import request, url_for, render_template, flash, redirect
 from datetime import datetime
+
+from flask import request, url_for, render_template, flash, redirect
 from flask_login import current_user
+
+from app import db
 from app.management import bp
-from app.models.person import Person
-from app.management.routes.movie import flash_form_errors
 from app.management.forms.movie import MovieDeleteForm
 from app.management.forms.person import PersonCreateForm, PersonModifyForm
+from app.management.routes.entertainment.movie import flash_form_errors
+from app.models.person import Person
 
 
 @bp.route('/persons', methods=['GET', 'POST'])

@@ -1,7 +1,6 @@
 {% extends '_base.html' %}
 
 {% block app_content %}
-
     <link rel="stylesheet" href="{{ url_for('static', filename='css/select2.min.css') }}" />
 
     {% if current_user.is_authenticated and current_user.is_admin %}
@@ -10,7 +9,7 @@
 
     <table class="table table-hover">
         <thead>
-        <tr><th>名称</th><th>成立时间</th><th>CEO</th><th>2019公司排名</th><th>工资条数</th>
+        <tr><th>音乐类型</th><th>收录歌曲数目</th><th>创建时间</th><th>最后一次修改</th>
             {% if current_user.is_authenticated and current_user.is_admin %}
                 <th>管理</th>
             {% endif %}
@@ -19,25 +18,9 @@
         {% for item in items %}
             <tr>
                 <td>{{ item.name }}</td>
-                <td>{% if item.founded_time %}
-                        {{ item.founded_time.year }}年
-                    {% endif %}
-                </td>
-                <td>
-                    {% if item.president %}
-                        {{ item.president.name }}
-                    {% endif %}
-                </td>
-                <td>
-                    {% if item.rank_2019  %}
-                        {{ item.rank_2019 }}
-                    {% endif %}
-                </td>
-                <td>
-                    {% if item.salary_cnt  %}
-                        {{ item.salary_cnt }}
-                    {% endif %}
-                </td>
+                <td>{{ item.music_cnt }}</td>
+                <td>{{ moment(item.create_time).fromNow() }}</td>
+                <td>{{ moment(item.update_time).fromNow() }}</td>
                 {% if current_user.is_authenticated and current_user.is_admin %}
                     <td>
                         {% include 'general/wtf_quick_form_modify.html' %}
@@ -63,6 +46,7 @@
         </ul>
     </nav>
 {% endblock %}
+
 
 {% block scripts %}
     {{ super() }}

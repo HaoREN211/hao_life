@@ -3,15 +3,17 @@
 # 时间：2020/1/13 18:10
 # IDE：PyCharm
 
-from app import db
 from flask import request, render_template, url_for, redirect, flash
 from flask_login import current_user
+
+from app import db
 from app.management import bp
-from app.models.marathon import Marathon
 from app.management.forms import modify_form_constructor, modify_db, create_db_row
-from app.management.forms.movie import MovieDeleteForm
-from app.management.routes.movie import flash_form_errors
 from app.management.forms.life.marathon import MarathonCreateForm, MarathonModifyForm
+from app.management.forms.movie import MovieDeleteForm
+from app.management.routes.entertainment.movie import flash_form_errors
+from app.models.marathon import Marathon
+
 
 # 小区列表
 @bp.route('/marathons', methods=['GET', 'POST'])

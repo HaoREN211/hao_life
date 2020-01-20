@@ -6,7 +6,7 @@
 from flask import render_template, flash
 from app.management import bp
 from app.models.country import Constellation
-from app.management.routes.movie import flash_form_errors
+from app.management.routes.entertainment.movie import flash_form_errors
 from app.management.forms.time import SingleTimeForm
 
 

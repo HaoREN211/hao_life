@@ -7,7 +7,8 @@ from flask import Blueprint
 
 bp = Blueprint('management', __name__)
 
-from app.management.routes import financial_management, movie
+from app.management.routes import financial_management
+from app.management.routes.entertainment import movie, music
 from app.management.routes.life import estate, marathon
 from app.management.routes.consume import consume, consume_way, consume_type, consume_plate, consume_description
 from app.management.routes.general import constellation, person, shop, enterprise

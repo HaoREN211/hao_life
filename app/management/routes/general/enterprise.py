@@ -3,22 +3,24 @@
 # 时间：2020/1/9 10:21
 # IDE：PyCharm
 
+import datetime
+
 from flask import render_template, flash, request, url_for, redirect
 from flask_login import current_user
+
 from app import db
-import datetime
 from app.management import bp
-from app.models.enterprise import Enterprise
-from app.management.routes.movie import flash_form_errors
 from app.management.forms.general.enterprise import EnterpriseCreateForm, EnterpriseModifyForm
 from app.management.forms.movie import MovieDeleteForm
-from app.tools import reform_datetime_local_with_datetime
+from app.management.routes.entertainment.movie import flash_form_errors
+from app.models.enterprise import Enterprise
+
 
 # 消费列表
 @bp.route('/consume/enterprises', methods=['GET', 'POST'])
 def enterprises():
     page = request.args.get('page', 1, type=int)
-    items = Enterprise.query.order_by().paginate(page, 10, False)
+    items = Enterprise.query.order_by(Enterprise.rank_2019.asc()).paginate(page, 10, False)
 
     add_form = EnterpriseCreateForm()
     delete_form = MovieDeleteForm()
@@ -82,6 +84,11 @@ def modify_enterprise(temp_modify_form):
         is_modified = True
         target.name = modified_name
 
+    rank_2019 = int(temp_modify_form.rank_2019.data)
+    if rank_2019 != target.rank_2019:
+        target.rank_2019 = rank_2019
+        is_modified = True
+
     modified_name = temp_modify_form.short_name.data if (
     (not temp_modify_form.short_name.data is None) and (len(str(temp_modify_form.short_name.data).strip()) > 0)) else None
     if modified_name != target.name:
@@ -122,5 +129,6 @@ def modify_form_constructor(items):
         temp_form.founded_time.data = current_item.founded_time
         temp_form.president_id.data = 0 if current_item.president_id is None else current_item.president_id
         temp_form.headquarter_id.data = 0 if current_item.headquarter_id is None else current_item.headquarter_id
+        temp_form.rank_2019.data = current_item.rank_2019
         modify_form[current_item.id] = temp_form
     return modify_form

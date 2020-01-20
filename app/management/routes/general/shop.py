@@ -5,13 +5,15 @@
 
 from flask import render_template, flash, request, url_for, redirect
 from flask_login import current_user
+from sqlalchemy import desc
+
 from app import db
 from app.management import bp
-from app.models.consume import Shop
-from app.management.routes.movie import flash_form_errors
-from app.management.forms.shop import ShopCreateForm, ShopModifyForm
 from app.management.forms.movie import MovieDeleteForm
-from sqlalchemy import desc
+from app.management.forms.shop import ShopCreateForm, ShopModifyForm
+from app.management.routes.entertainment.movie import flash_form_errors
+from app.models.consume import Shop
+
 
 # 消费列表
 @bp.route('/consume/shops', methods=['GET', 'POST'])

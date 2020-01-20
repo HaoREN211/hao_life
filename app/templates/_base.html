@@ -66,10 +66,10 @@
                                 财务 <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="{{ url_for('management.financial_management') }}">理财</a></li>
+                                <li><a href="{{ url_for('management.financial_management') }}"><span class="glyphicon glyphicon-euro"></span> 理财</a></li>
                                 <li class="divider"></li>
                                 <li class="dropdown-submenu">
-                                    <a tabindex="-1" href="#">消费</a>
+                                    <a tabindex="-1" href="#"><span class="glyphicon glyphicon-th-list"></span> 消费</a>
                               <ul class="dropdown-menu">
                                     <li><a href="{{ url_for('management.consumes') }}">消费明细</a></li>
                                     <li class="divider"></li>
@@ -89,7 +89,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="dropdown-submenu">
-                                    <a tabindex="-1" href="#">房源</a>
+                                    <a tabindex="-1" href="#"><span class="glyphicon glyphicon-home"></span> 房源</a>
                                     <ul class="dropdown-menu">
                                         <li><a href="{{ url_for('management.buildings') }}">房源</a></li>
                                         <li class="divider"></li>
@@ -103,7 +103,7 @@
                                     </ul>
                                 </li>
                                 <li class="divider"></li>
-                                <li><a href="{{ url_for('management.marathons') }}">马拉松</a></li>
+                                <li><a href="{{ url_for('management.marathons') }}"><span class="glyphicon glyphicon-headphones"></span> 马拉松</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -111,7 +111,7 @@
                                 工作 <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="{{ url_for('management.salaries') }}">工资</a></li>
+                                <li><a href="{{ url_for('management.salaries') }}"><span class="glyphicon glyphicon-list-alt"></span> 工资</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -120,13 +120,24 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="dropdown-submenu">
-                                    <a tabindex="-1" href="#">电影</a>
+                                    <a tabindex="-1" href="#"><span class="glyphicon glyphicon-film"></span> 电影</a>
                                     <ul class="dropdown-menu">
                                         <li><a href="{{ url_for('management.movies') }}">电影</a></li>
                                         <li class="divider"></li>
                                         <li><a href="{{ url_for('management.cinemas') }}">电影院</a></li>
                                         <li class="divider"></li>
                                         <li><a href="{{ url_for('management.movie_types') }}">电影类别</a></li>
+                                    </ul>
+                                </li>
+                                <li class="divider"></li>
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#"><span class="glyphicon glyphicon-music"></span> 音乐</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="{{ url_for('management.musics') }}">音乐</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="{{ url_for('management.albums') }}">专辑</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="{{ url_for('management.music_types') }}">类型</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -136,10 +147,10 @@
                                 通用 <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="{{ url_for('management.enterprises') }}">公司</a></li>
+                                <li><a href="{{ url_for('management.enterprises') }}"><span class="glyphicon glyphicon-home"></span> 公司</a></li>
                                 <li class="divider"></li>
                                 <li class="dropdown-submenu">
-                                    <a tabindex="-1" href="#">地点</a>
+                                    <a tabindex="-1" href="#"><span class="glyphicon glyphicon-plane"></span> 地点</a>
                                     <ul class="dropdown-menu">
                                         <li><a href="{{ url_for('management.countries') }}">国家</a></li>
                                         <li class="divider"></li>
@@ -151,11 +162,11 @@
                                     </ul>
                                 </li>
                                 <li class="divider"></li>
-                                <li><a href="{{ url_for('management.persons') }}">人物</a></li>
+                                <li><a href="{{ url_for('management.persons') }}"><span class="glyphicon glyphicon-user"></span> 人物</a></li>
                                 <li class="divider"></li>
-                                <li><a href="{{ url_for('management.constellations') }}">星座</a></li>
+                                <li><a href="{{ url_for('management.constellations') }}"><span class="glyphicon glyphicon-star"></span> 星座</a></li>
                                 <li class="divider"></li>
-                                <li><a href="{{ url_for('management.shops') }}">商店</a></li>
+                                <li><a href="{{ url_for('management.shops') }}"><span class="glyphicon glyphicon-shopping-cart"></span> 商店</a></li>
                             </ul>
                         </li>
                     </ul>

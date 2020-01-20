@@ -19,6 +19,7 @@ class EnterpriseCreateForm(RenderForm):
                                render_kw={"class": "select-control"})
     headquarter_id = SelectField("公司总部", coerce=int, choices=[(0, " ")], default=0,
                                  render_kw={"class":"select-control"})
+    rank_2019 = StringField("2019年排名", render_kw={"type": "number", "step": "1"})
     create_submit = SubmitField("添加", render_kw={"class":"btn btn-xs btn-success"})
     cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
                                           "data-dismiss": "modal",
@@ -45,6 +46,7 @@ class EnterpriseModifyForm(RenderForm):
                                render_kw={"class": "select-control"})
     headquarter_id = SelectField("公司总部", coerce=int, choices=[(0, " ")],
                                  render_kw={"class":"select-control"})
+    rank_2019 = StringField("2019年排名", render_kw={"type": "number", "step": "1"})
     modify_submit = SubmitField("修改", render_kw={"class":"btn btn-xs btn-success"})
     cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
                                           "data-dismiss": "modal",

@@ -5,12 +5,10 @@
 
 from app.models.marathon import Marathon
 from app.management.forms.movie import RenderForm
-from wtforms import StringField, SubmitField, SelectField, HiddenField, DecimalField, BooleanField, DateField
+from wtforms import StringField, SubmitField, SelectField, HiddenField, BooleanField
 from wtforms.validators import DataRequired, ValidationError, Length
 from app.models.country import District
 from app.models.consume import ConsumePlate
-from app.models.estate import Estate, BuildingType, BuildingProperty, Building, BuildingOwner
-from app.models.enterprise import Enterprise
 
 class MarathonCreateForm(RenderForm):
     name = StringField("名称", validators=[DataRequired(), Length(max=100)])
