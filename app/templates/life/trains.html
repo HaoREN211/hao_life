@@ -1,0 +1,91 @@
+{% extends '_base.html' %}
+
+{% block app_content %}
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/select2.min.css') }}" />
+
+    {% if current_user.is_authenticated and current_user.is_admin %}
+        {% include 'general/wtf_quick_form_create.html' %}
+    {% endif %}
+
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>班次</th>
+            <th>乘坐时间</th>
+            <th>乘车地点</th>
+            <th>到达地点</th>
+            <th>开车时间</th>
+            <th>到站时间</th>
+            <th>票价花费</th>
+            {% if current_user.is_authenticated and current_user.is_admin %}
+                <th>管理</th>
+            {% endif %}
+        </tr>
+        </thead>
+        {% for item in items %}
+            <tr style="cursor: pointer">
+                <td>
+                    {% if item.train_number %}{{ item.train_number.name }}{% endif %}
+                </td>
+                <td>{% if item.time_from %}
+                        {{ item.time_from.year }}年{{ item.time_from.month }}月{{ item.time_from.day }}日
+                    {% endif %}</td>
+                <td>{% if item.city_from %}{{ item.city_from.name }}{% endif %}</td>
+                <td>{% if item.city_to %}{{ item.city_to.name }}{% endif %}</td>
+                <td>
+                    {% if item.time_from %}
+                        {{ item.time_from.hour }}时{{ item.time_from.minute }}分
+                    {% endif %}
+                </td>
+                <td>{% if item.time_to %}
+                        {{ item.time_to.hour }}时{{ item.time_to.minute }}分
+                    {% endif %}
+                </td>
+                <td>{{ item.cost }}元</td>
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                    <td>
+                        {% include 'general/wtf_quick_form_modify.html' %}
+                        {% include 'general/wtf_quick_form_delete.html' %}
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+
+    <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_url %} disabled{% endif %}">
+                <a href="{{ prev_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span> 上一页
+                </a>
+            </li>
+            <li class="next{% if not next_url %} disabled{% endif %}">
+                <a href="{{ next_url or '#' }}">
+                    下一页 <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endblock %}
+
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='js/select2.4.0.0.min.js') }}"></script>
+
+    <script type="application/javascript">
+        $(document).ready(function() {
+            $('.select-control').select2();
+
+            var list_object = document.getElementsByClassName("select2-container");
+            for (var i =0; i<list_object.length; i++) {
+                list_object[i].style.width = "100%";
+            }
+
+            {# https://blog.csdn.net/john1337/article/details/53315969 #}
+            $.fn.modal.Constructor.prototype.enforceFocus = function () { }
+        });
+    </script>
+{% endblock %}

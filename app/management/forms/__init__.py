@@ -10,6 +10,7 @@ from app.management.forms.life.marathon import MarathonModifyForm
 from app.management.forms.work.salary import SalaryModifyForm
 from app.management.forms.general.upload import FileForm
 from app.management.forms.entertainment.music import MusicModifyForm, AlbumModifyForm, MusicTypeModifyForm
+from app.management.forms.life.train import TrainNumberModifyForm, TrainModifyForm
 import os
 from werkzeug.utils import secure_filename
 from app.tools import get_file_type, reform_datetime_local_with_datetime, is_date, is_timestamp
@@ -21,6 +22,10 @@ def modify_form_constructor(items, temp_form):
 
         if temp_form == "EstateModifyForm":
             modify_form = EstateModifyForm()
+        elif temp_form == "TrainModifyForm":
+            modify_form = TrainModifyForm()
+        elif temp_form == "TrainNumberModifyForm":
+            modify_form = TrainNumberModifyForm()
         elif temp_form == "BuildingTypeModifyForm":
             modify_form = BuildingTypeModifyForm()
         elif temp_form == "BuildingPropertyModifyForm":
