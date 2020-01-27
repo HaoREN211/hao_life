@@ -5,7 +5,7 @@
 
 from flask import render_template, flash, request, url_for, redirect
 from flask_login import current_user
-
+from sqlalchemy import desc
 from app import db
 from app.management import bp
 from app.management.forms.location.province import ProvinceCreateForm, ProvinceModifyForm
@@ -18,7 +18,7 @@ from app.models.country import Province
 @bp.route('/provinces', methods=['GET', 'POST'])
 def provinces():
     page = request.args.get('page', 1, type=int)
-    items = Province.query.order_by().paginate(page, 10, False)
+    items = Province.query.order_by(desc(Province.city_cnt)).paginate(page, 10, False)
 
     add_form = ProvinceCreateForm()
     delete_form = MovieDeleteForm()
