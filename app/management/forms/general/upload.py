@@ -13,3 +13,11 @@ class FileForm(RenderForm):
     cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
                                           "data-dismiss": "modal",
                                           "type": "button"})
+
+class LinkForm(RenderForm):
+    id = HiddenField("id")
+    file_select = StringField("文件链接", render_kw={"class":"form-control"})
+    file_submit = SubmitField("上传", render_kw={"class": "btn btn-xs btn-success"})
+    cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
+                                          "data-dismiss": "modal",
+                                          "type": "button"})
