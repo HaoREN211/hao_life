@@ -35,6 +35,19 @@ class Estate(db.Model):
         return (select([func.count(Building.id)])
                 .where(Building.estate_id == cls.id))
 
+
+class DistrictTimes(db.Model):
+    __table_args__ = (db.UniqueConstraint("estate_id", "times"), )
+    id = db.Column(BIGINT(unsigned=True), primary_key=True, comment="楼盘期数主键")
+    name = db.Column(db.String(100), unique=True, nullable=False, comment="楼盘名称")
+    estate_id = db.Column(BIGINT(unsigned=True), db.ForeignKey("estate.id"), nullable=False, comment="楼盘主键")
+    times = db.Column(db.Integer, nullable=False, comment="楼盘期数")
+    start_register_time = db.Column(db.Date, nullable=True, comment="登记开始时间")
+    end_register_time = db.Column(db.Date, nullable=True, comment="登记结束时间")
+    lotto_date = db.Column(db.Date, nullable=True, comment="摇号时间")
+    pick_date = db.Column(db.Date, nullable=True, comment="选房时间")
+
+
 class Building(db.Model):
     __table_args__ = {'comment': '房屋信息'}
     id = db.Column(BIGINT(unsigned=True), primary_key=True, comment="房产主键")

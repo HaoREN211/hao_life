@@ -5,7 +5,7 @@
 from app import db
 from flask import redirect, url_for, flash
 from datetime import datetime
-from app.management.forms.estate import EstateModifyForm, BuildingTypeModifyForm, BuildingPropertyModifyForm, BuildingModifyForm, BuildingOwnerModifyForm
+from app.management.forms.estate import EstateModifyForm, BuildingTypeModifyForm, BuildingPropertyModifyForm, BuildingModifyForm, BuildingOwnerModifyForm, DistrictTimesModifyForm
 from app.management.forms.life.marathon import MarathonModifyForm
 from app.management.forms.work.salary import SalaryModifyForm
 from app.management.forms.general.upload import FileForm
@@ -44,6 +44,8 @@ def modify_form_constructor(items, temp_form):
             modify_form = AlbumModifyForm()
         elif temp_form =="MusicTypeModifyForm":
             modify_form = MusicTypeModifyForm()
+        elif temp_form == "DistrictTimesModifyForm":
+            modify_form = DistrictTimesModifyForm()
 
         for current_key in modify_form.__dict__.keys():
             if str(current_key).startswith("_"):

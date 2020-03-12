@@ -8,7 +8,7 @@ from app.management.forms.movie import RenderForm
 from wtforms import StringField, SubmitField, SelectField, HiddenField, DecimalField, BooleanField, DateField
 from wtforms.validators import DataRequired, ValidationError, Length
 from app.models.country import District
-from app.models.estate import Estate, BuildingType, BuildingProperty, Building, BuildingOwner
+from app.models.estate import Estate, BuildingType, BuildingProperty, Building, BuildingOwner, DistrictTimes
 from app.models.enterprise import Enterprise
 
 class EstateCreateForm(RenderForm):
@@ -218,3 +218,42 @@ class BuildingOwnerModifyForm(RenderForm):
             list_id = [0 if int(x)==int(self.id.data) else 1 for x in list_id]
             if sum(list_id) > 0:
                 raise ValidationError('修改失败：《' + str(name.data) + '》已经存在，请挑选另外一个名字。')
+
+class DistrictTimesCreateForm(RenderForm):
+    name = StringField("楼盘名称", validators=[DataRequired(), Length(max=100)])
+    estate_id = SelectField("楼盘", coerce=int, choices=[(0, " ")], default=0,
+                              render_kw={"class": "select-control"})
+    times = StringField("期数", render_kw={"type": "number", "step": "1"})
+    start_register_time = StringField("登记开始时间", render_kw={"type": "date"})
+    end_register_time = StringField("登记结束时间", render_kw={"type": "date"})
+    lotto_date = StringField("摇号时间", render_kw={"type": "date"})
+    pick_date = StringField("选房时间", render_kw={"type": "date"})
+
+    create_submit = SubmitField("添加", render_kw={"class":"btn btn-xs btn-success"})
+    cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
+                                          "data-dismiss": "modal",
+                                          "type": "button"})
+
+    def __init__(self, *args, **kwargs):
+        super(DistrictTimesCreateForm, self).__init__(*args, **kwargs)
+        self.estate_id.choices.extend([(x.id, x.name) for x in Estate.query.all()])
+
+class DistrictTimesModifyForm(RenderForm):
+    id = HiddenField("主键")
+    name = StringField("楼盘名称", validators=[DataRequired(), Length(max=100)])
+    estate_id = SelectField("楼盘", coerce=int, choices=[(0, " ")], default=0,
+                              render_kw={"class": "select-control"})
+    times = StringField("期数", render_kw={"type": "number", "step": "1"})
+    start_register_time = StringField("登记开始时间", render_kw={"type": "date"})
+    end_register_time = StringField("登记结束时间", render_kw={"type": "date"})
+    lotto_date = StringField("摇号时间", render_kw={"type": "date"})
+    pick_date = StringField("选房时间", render_kw={"type": "date"})
+
+    modify_submit = SubmitField("修改", render_kw={"class":"btn btn-xs btn-success"})
+    cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
+                                          "data-dismiss": "modal",
+                                          "type": "button"})
+
+    def __init__(self, *args, **kwargs):
+        super(DistrictTimesModifyForm, self).__init__(*args, **kwargs)
+        self.estate_id.choices.extend([(x.id, x.name) for x in Estate.query.all()])
