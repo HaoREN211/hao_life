@@ -21,7 +21,7 @@
 
     <table class="table table-hover">
         <thead>
-        <tr><th>房间</th><th>顺序</th><th>单价</th><th>总价</th>
+        <tr><th>房间</th><th>顺序</th><th>建筑面积</th><th>单价</th><th>总价</th>
             {% if current_user.is_authenticated and current_user.is_admin %}
                 <th>管理</th>
             {% endif %}
@@ -31,6 +31,7 @@
             <tr>
                 <td>{{ item.name }}</td>
                 <td>{{ item.order }}</td>
+                <td>{{ item.size }}平米</td>
                 <td>{{ item.unique_price }}元</td>
                 <td>{{ item.total_price }}万元</td>
                 {% if current_user.is_authenticated and current_user.is_admin %}
