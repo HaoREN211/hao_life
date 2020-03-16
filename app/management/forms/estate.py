@@ -8,7 +8,7 @@ from app.management.forms.movie import RenderForm
 from wtforms import StringField, SubmitField, SelectField, HiddenField, DecimalField, BooleanField, DateField
 from wtforms.validators import DataRequired, ValidationError, Length
 from app.models.country import District
-from app.models.estate import Estate, BuildingType, BuildingProperty, Building, BuildingOwner, DistrictTimes
+from app.models.estate import Estate, BuildingType, BuildingProperty, Building, BuildingOwner, DistrictTimes, Apartment
 from app.models.enterprise import Enterprise
 
 class EstateCreateForm(RenderForm):
@@ -257,3 +257,54 @@ class DistrictTimesModifyForm(RenderForm):
     def __init__(self, *args, **kwargs):
         super(DistrictTimesModifyForm, self).__init__(*args, **kwargs)
         self.estate_id.choices.extend([(x.id, x.name) for x in Estate.query.all()])
+
+class ApartmentCreateForm(RenderForm):
+    district_times_id = SelectField("楼盘", coerce=int, choices=[(0, " ")], default=0,
+                            render_kw={"class": "select-control"})
+    order = StringField("期望顺序", render_kw={"type": "number", "step": "1"})
+    building_number = StringField("栋数", render_kw={"type": "number", "step": "1"})
+    floor = StringField("楼层", render_kw={"type": "number", "step": "1"})
+    number = StringField("号数", render_kw={"type": "number", "step": "1"})
+    size = StringField("建筑面积(平方米)", render_kw={"type": "number", "step": "0.01"})
+    unique_price = StringField("单价(元)", render_kw={"type": "number", "step": "0.01"})
+    total_price = StringField("总价(元)", render_kw={"type": "number", "step": "0.01"})
+
+    create_submit = SubmitField("添加", render_kw={"class":"btn btn-xs btn-success"})
+    cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
+                                          "data-dismiss": "modal",
+                                          "type": "button"})
+
+    def __init__(self, *args, **kwargs):
+        super(ApartmentCreateForm, self).__init__(*args, **kwargs)
+        self.district_times_id.choices.extend([(x.id, x.name) for x in DistrictTimes.query.all()])
+
+
+class ApartmentModifyForm(RenderForm):
+    id = HiddenField("主键")
+
+    district_times_id = SelectField("楼盘", coerce=int, choices=[(0, " ")], default=0,
+                            render_kw={"class": "select-control"})
+    order = StringField("期望顺序", render_kw={"type": "number", "step": "1"})
+    building_number = StringField("栋数", render_kw={"type": "number", "step": "1"})
+    floor = StringField("楼层", render_kw={"type": "number", "step": "1"})
+    number = StringField("号数", render_kw={"type": "number", "step": "1"})
+    size = StringField("建筑面积(平方米)", render_kw={"type": "number", "step": "0.01"})
+    unique_price = StringField("单价(元)", render_kw={"type": "number", "step": "0.01"})
+    total_price = StringField("总价(元)", render_kw={"type": "number", "step": "0.01"})
+
+    modify_submit = SubmitField("修改", render_kw={"class":"btn btn-xs btn-success"})
+    cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
+                                          "data-dismiss": "modal",
+                                          "type": "button"})
+
+    def __init__(self, *args, **kwargs):
+        super(ApartmentModifyForm, self).__init__(*args, **kwargs)
+        self.district_times_id.choices.extend([(x.id, x.name) for x in DistrictTimes.query.all()])
+
+
+class ListDistrictTimes(RenderForm):
+    list_district_times_id = SelectField("楼盘", coerce=int, choices=[(0, " ")], default=0,
+                                    render_kw={"class": "select-control"})
+    def __init__(self, *args, **kwargs):
+        super(ListDistrictTimes, self).__init__(*args, **kwargs)
+        self.list_district_times_id.choices.extend([(x.id, x.name) for x in DistrictTimes.query.all()])

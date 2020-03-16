@@ -47,6 +47,38 @@ class DistrictTimes(db.Model):
     lotto_date = db.Column(db.Date, nullable=True, comment="摇号时间")
     pick_date = db.Column(db.Date, nullable=True, comment="选房时间")
 
+    estate = db.relationship("Estate", backref="district_times", foreign_keys=[estate_id])
+
+
+class Apartment(db.Model):
+    __table_args__ = (db.UniqueConstraint("district_times_id", "order"),
+                      db.UniqueConstraint("district_times_id", "building_number", "floor", "number"),
+                      {"comment": "一户一价明细"})
+    name = db.Column(db.String(100), unique=True, nullable=True, comment="一户一价名称")
+    id = db.Column(BIGINT(unsigned=True), primary_key=True, comment="一户一价主键")
+    district_times_id = db.Column(BIGINT(unsigned=True), db.ForeignKey("district_times.id"), nullable=False, comment="楼盘主键")
+    order = db.Column(db.Integer, nullable=True, comment="当前楼盘顺序")
+    building_number = db.Column(db.Integer, nullable=True, comment="栋数")
+    floor = db.Column(db.Integer, nullable=True, comment="楼层")
+    number = db.Column(db.Integer, nullable=True, comment="号数")
+    size = db.Column(db.DECIMAL(6, 2), nullable=True, comment="建筑面积(平方米)")
+    unique_price = db.Column(db.DECIMAL(8, 2), nullable=True, comment="单价(元)")
+    total_price = db.Column(db.DECIMAL(6, 2), nullable=True, comment="总价(万元)")
+
+    district_times = db.relationship("DistrictTimes", backref="apartments", foreign_keys=[district_times_id])
+
+    def upgrade_name(self):
+        tmp_name = ""
+        if self.district_times is not None:
+            tmp_name = self.district_times.name
+        if self.building_number is not None:
+            tmp_name += str(self.building_number)+"栋"
+        if self.floor is not None:
+            tmp_name += str(self.floor) + "层"
+        if self.number is not None:
+            tmp_name += str(self.number) + "号"
+        self.name = tmp_name
+
 
 class Building(db.Model):
     __table_args__ = {'comment': '房屋信息'}

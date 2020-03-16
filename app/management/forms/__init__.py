@@ -5,7 +5,9 @@
 from app import db
 from flask import redirect, url_for, flash
 from datetime import datetime
-from app.management.forms.estate import EstateModifyForm, BuildingTypeModifyForm, BuildingPropertyModifyForm, BuildingModifyForm, BuildingOwnerModifyForm, DistrictTimesModifyForm
+from app.management.forms.estate import (EstateModifyForm,
+                                         BuildingTypeModifyForm, BuildingPropertyModifyForm, BuildingModifyForm,
+                                         BuildingOwnerModifyForm, DistrictTimesModifyForm, ApartmentModifyForm)
 from app.management.forms.life.marathon import MarathonModifyForm
 from app.management.forms.work.salary import SalaryModifyForm
 from app.management.forms.general.upload import FileForm
@@ -14,6 +16,7 @@ from app.management.forms.life.train import TrainNumberModifyForm, TrainModifyFo
 import os
 from werkzeug.utils import secure_filename
 from app.tools import get_file_type, reform_datetime_local_with_datetime, is_date, is_timestamp
+
 
 # 重新构造修改的表单
 def modify_form_constructor(items, temp_form):
@@ -46,6 +49,8 @@ def modify_form_constructor(items, temp_form):
             modify_form = MusicTypeModifyForm()
         elif temp_form == "DistrictTimesModifyForm":
             modify_form = DistrictTimesModifyForm()
+        elif temp_form == "ApartmentModifyForm":
+            modify_form = ApartmentModifyForm()
 
         for current_key in modify_form.__dict__.keys():
             if str(current_key).startswith("_"):

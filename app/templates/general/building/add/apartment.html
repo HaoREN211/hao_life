@@ -1,0 +1,93 @@
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% if current_user.is_authenticated and current_user.is_admin %}
+    <input type="button" class="btn btn-xs btn-success" value="添加"
+            data-toggle="modal" data-target="#myModalCreate">
+    <div class="modal fade" id="myModalCreate" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title" id="myModalCvMainAttributeLabel">
+                        {% if create_label %}
+                            {{ create_label }}
+                        {% else %}
+                            添加一户一价信息
+                        {% endif %}
+                    </h4>
+                </div>
+
+                <div class="modal-body">
+                    {% if add_form %}
+                        <form method="post" role="form" class="form">
+                            {{ add_form.csrf_token }}
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                    {{ add_form.district_times_id.label }}
+                                        {{ add_form.district_times_id(class="form-control") }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        {{ add_form.order.label }}
+                                        {{ add_form.order(class="form-control") }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        {{ add_form.building_number.label }}
+                                        {{ add_form.building_number(class="form-control") }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        {{ add_form.floor.label }}
+                                        {{ add_form.floor(class="form-control") }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        {{ add_form.number.label }}
+                                        {{ add_form.number(class="form-control") }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        {{ add_form.size.label }}
+                                        {{ add_form.size(class="form-control") }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        {{ add_form.unique_price.label }}
+                                        {{ add_form.unique_price(class="form-control") }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        {{ add_form.total_price.label }}
+                                        {{ add_form.total_price(class="form-control") }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    {{ add_form.create_submit }}
+                                    {{ add_form.cancel }}
+                                </div>
+                            </div>
+                        </form>
+                    {% endif %}
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{% endif %}
