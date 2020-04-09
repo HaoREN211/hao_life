@@ -3,86 +3,110 @@
 # 时间：2020/4/8 17:58
 # IDE：PyCharm
 
-from os import remove
-from os.path import exists
-
-from flask import render_template, flash, request, url_for, redirect
-from flask_login import current_user
-
-from app import db
+from flask import render_template, request, url_for, redirect, flash
 from app.management import bp
-from app.management.forms import modify_form_constructor, modify_db, create_db_row, upload_form_constructor, \
-    modify_upload
-from app.management.forms.general.upload import FileForm
-from app.management.forms.movie import MovieDeleteForm
+from flask_login import current_user
+from app import db
+from app.models.diary import WorkDiary, WorkDiaryDetail
+from app.models.salary import WorkExperience
+import datetime as dt
+from sqlalchemy import func
+from app.management.forms.work.work_diary import WorkDiaryDetailCreateForm, WorkDiaryDetailModifyForm, WorkDiaryDetailDeleteForm
 from app.management.routes.entertainment.movie import flash_form_errors
-from app.models.diary import WorkDiary
-from app.management.forms.work.work_diary import WorkDiaryCreateForm, WorkDiaryModifyForm
+from app.management.forms import modify_form_constructor
+from operator import and_
+
+
+# 日记列表
+@bp.route('/work_diary/<id>', methods=['GET', 'POST'])
+def work_diary(id):
+    page = request.args.get('page', 1, type=int)
+
+    data_work_diary = WorkDiary.query.filter_by(id=id).first()
+    data_work_diary_details = WorkDiaryDetail.query.filter_by(work_diary_id=id).order_by(WorkDiaryDetail.order).paginate(page, 10, False)
+    detail_create_form = WorkDiaryDetailCreateForm()
+    detail_modify_form = WorkDiaryDetailModifyForm()
+    detail_error_form = None
+    detail_delete_form = WorkDiaryDetailDeleteForm()
+
+
+    # 只有超级管理员能修改或添加日记，而且只接受post请求
+    if current_user.is_authenticated and current_user.is_admin and request.method == "POST":
+        # 新增日记要求
+        if detail_create_form.is_submitted() and detail_create_form.create_submit.data:
+            # 填写的新增日记格式有错的话则显示错误
+            if not detail_create_form.validate():
+                flash_form_errors(detail_create_form)
+            else:
+                db.session.add(WorkDiaryDetail(
+                    order = (1 if WorkDiaryDetail.query.filter_by(work_diary_id=id).count()==0
+                             else int(db.session.query(WorkDiaryDetail.order).filter_by(work_diary_id=id).order_by(WorkDiaryDetail.order.desc()).first()[0])+1),
+                    content = detail_create_form.content.data,
+                    work_diary_id = id,
+                    work_project_id = int(detail_create_form.work_project_id.data)
+                ))
+                return redirect(url_for("management.work_diary", id=id))
+
+        # 修改日记要求
+        if detail_modify_form.is_submitted() and detail_modify_form.modify_submit.data:
+            if not detail_modify_form.validate():
+                detail_error_form = detail_modify_form
+                flash_form_errors(detail_modify_form)
+            else:
+                current_work_diary_detail = WorkDiaryDetail.query.filter_by(id=int(detail_modify_form.id.data)).first()
+                # 判断当前用户是否修改了数据
+                has_modify = False
+                if current_work_diary_detail.work_project_id != int(detail_modify_form.work_project_id.data):
+                    current_work_diary_detail.work_project_id = int(detail_modify_form.work_project_id.data)
+                    has_modify = True
+                if current_work_diary_detail.content != detail_modify_form.content.data:
+                    current_work_diary_detail.content = detail_modify_form.content.data
+                    has_modify = True
+                if has_modify:
+                    flash("修改成功")
+                else:
+                    flash("毫无任何修改")
+                return redirect(url_for("management.work_diary", id=id))
+
+        # 删除日记要求
+        if detail_delete_form.validate_on_submit() and detail_delete_form.delete_submit.data:
+            current_work_diary_detail = WorkDiaryDetail.query.filter_by(id=int(detail_delete_form.id.data)).first()
+            list_to_modify = WorkDiaryDetail.query.filter(WorkDiaryDetail.work_diary_id==id,
+                WorkDiaryDetail.order>current_work_diary_detail.order).order_by(WorkDiaryDetail.order.asc()).all()
+            db.session.delete(current_work_diary_detail)
+            db.session.commit()
+            for current_to_modify in list_to_modify:
+                current_to_modify.order = current_to_modify.order-1
+            flash("删除成功")
+            return redirect(url_for("management.work_diary", id=id))
+
+    # 快速生成修改表单
+    modify_form = modify_form_constructor(data_work_diary_details, "WorkDiaryDetailModifyForm")
+
+    # 如果修改的时候出错，保留用户的修改，但不修改数据库
+    if not detail_error_form is None:
+        modify_form[int(detail_error_form.id.data)] = detail_error_form
+
+    return render_template("work/work_diary.html", work_diary=data_work_diary,
+                           work_diary_details=data_work_diary_details.items, create_form=detail_create_form,
+                           modify_form=modify_form, delete_form=detail_delete_form)
 
 
 # 房源列表
 @bp.route('/work_diaries', methods=['GET', 'POST'])
 def work_diaries():
     page = request.args.get('page', 1, type=int)
-    items = WorkDiary.query.order_by(WorkDiary.lottery_time.desc()).paginate(page, 10, False)
+    items = WorkDiary.query.order_by(WorkDiary.date.desc()).paginate(page, 10, False)
 
-    add_form = WorkDiaryCreateForm()
-    delete_form = MovieDeleteForm()
-    temp_error_form = None
-    temp_modify_form = WorkDiaryModifyForm()
-    temp_upload_form = FileForm()
-
-
-    if request.method == "POST":
-        if current_user.is_authenticated and current_user.is_admin:
-            if add_form.create_submit.data and add_form.is_submitted():
-                if not add_form.validate():
-                    flash_form_errors(add_form)
-                else:
-                    info_create = create_db_row(add_form, WorkDiary(), "management.work_diaries")
-                    added_work_diaries = WorkDiary.query.order_by(WorkDiary.id.desc()).first()
-                    added_work_diaries.upgrade_unit_price()
-                    return info_create
-            if temp_modify_form.modify_submit.data and temp_modify_form.is_submitted():
-                if not temp_modify_form.validate():
-                    temp_error_form = temp_modify_form
-                    flash_form_errors(temp_modify_form)
-                else:
-                    info_modify = modify_db(temp_modify_form, WorkDiary, 'management.work_diaries')
-                    modified_work_diaries = WorkDiary.query.filter_by(id=int(temp_modify_form.id.data)).first()
-                    modified_work_diaries.upgrade_unit_price()
-                    return info_modify
-            if delete_form.delete_submit.data and delete_form.validate_on_submit():
-                to_delete = WorkDiary.query.filter_by(id=int(delete_form.id.data)).first()
-                to_delete_file = to_delete.image
-                if to_delete_file is not None and len(str(to_delete_file).strip())>0:
-                    to_delete_file = "/root/hao_life/app/"+to_delete_file
-                    if exists(to_delete_file):
-                        remove(to_delete_file)
-                db.session.delete(to_delete)
-                flash("删除成功")
-                return redirect(url_for("management.work_diaries"))
-            if temp_upload_form.file_submit.data and temp_upload_form.validate_on_submit():
-                current_file = request.files['file_select']
-                saved_path = modify_upload(current_file, temp_upload_form, "work_diaries")
-                current_work_diaries = WorkDiary.query.filter_by(id=int(temp_upload_form.id.data)).first()
-                current_work_diaries.image = saved_path
-                flash("上传成功")
-                return redirect(url_for("management.work_diaries"))
-        else:
-            flash("您不是超级管理员，无法进行电影院数据的管理")
-            return redirect(url_for("management.work_diaries"))
-
-    modify_form = modify_form_constructor(items, "WorkDiaryModifyForm")
-    upload_image_form = upload_form_constructor(items)
-    if not temp_error_form is None:
-        modify_form[int(temp_error_form.id.data)] = temp_error_form
-
+    # 如果今天还没写过日志，则添加一条可以写的日志。
+    if WorkDiary.query.filter_by(date=dt.datetime.now().date()).count() == 0:
+        db.session.add(WorkDiary(date = dt.datetime.now().date(),
+                work_experience_id = db.session.query(func.max(WorkExperience.id)).first()[0],
+                create_time = dt.datetime.now()))
+        return redirect(url_for("management.work_diaries"))
 
     next_url = url_for('management.work_diaries', page=items.next_num) if items.has_next else None
     prev_url = url_for('management.work_diaries', page=items.prev_num) if items.has_prev else None
 
     return render_template("work/work_diaries.html", items=items.items,
-                           next_url=next_url, prev_url=prev_url,
-                           add_form=add_form, delete_form=delete_form, modify_form=modify_form, upload_image_form=upload_image_form)
-
+                           next_url=next_url, prev_url=prev_url)

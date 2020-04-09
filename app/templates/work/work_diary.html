@@ -1,0 +1,176 @@
+{% extends '_base.html' %}
+
+
+{% block app_content %}
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/select2.min.css') }}" />
+
+    <h4>{{ work_diary.date.year }}年{{ work_diary.date.month }}月{{ work_diary.date.day }}日 -
+    {{ work_diary.work_experience.enterprise.name }}</h4>
+    <hr />
+    {% if work_diary_details %}
+        <table class="table table-hover">
+            <thead><tr><th>顺序</th><th>项目</th>
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                    <th>管理</th>
+                {% endif %}
+            </tr></thead>
+            {% for work_diary_detail in work_diary_details %}
+                <tr>
+                    <td style="width: 60px">{{ work_diary_detail.order }}</td>
+                    <td><table><tr><td>{{ work_diary_detail.work_project.name }}</td></tr>
+                        <tr><td>{{ work_diary_detail.content }}</td></tr></table>
+                    </td>
+                    {% if current_user.is_authenticated and current_user.is_admin %}
+                        <td>
+                            <input type="button" class="btn btn-xs btn-warning" value="修改"
+                                data-toggle="modal" data-target="#myModalModify{{ work_diary_detail.id }}">
+                            <input type="button" class="btn btn-xs btn-danger" value="删除"
+                                data-toggle="modal" data-target="#myModalDelete{{ work_diary_detail.id }}">
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+
+        <nav aria-label="...">
+            <ul class="pager">
+                <li class="previous{% if not prev_url %} disabled{% endif %}">
+                    <a href="{{ prev_url or '#' }}">
+                        <span aria-hidden="true">&larr;</span> 上一页
+                    </a>
+                </li>
+                <li class="next{% if not next_url %} disabled{% endif %}">
+                    <a href="{{ next_url or '#' }}">
+                        下一页 <span aria-hidden="true">&rarr;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    {% endif %}
+
+    {% if current_user.is_authenticated and current_user.is_admin %}
+        <input type="button" class="btn btn-xs btn-success" value="添加" data-toggle="modal" data-target="#myModalCreate">
+        <button type="button" class="btn btn-danger btn-xs" onclick=window.location.href="{{ url_for('management.work_diaries') }}">
+            <span class="glyphicon glyphicon-remove"></span> 返回
+        </button>
+
+        {#添加删除和修改用的模态框#}
+        {% for item in work_diary_details %}
+            <div class="modal fade" id="myModalDelete{{ item.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                            </button>
+                            <h4 class="modal-title" id="myModalCvMainAttributeLabel">
+                                刪除 《{{ item.work_project.name }}》？
+                            </h4>
+                        </div>
+                        {% if delete_form %}
+                            <form method="post">
+                                <div class="modal-body">
+                                    {{ delete_form.csrf_token() }}
+                                    <div class="input-group col-sm-10">
+                                        {{ delete_form.id(class="form-control", value=item.id) }}
+                                    </div>
+                                    <p><span>{{ item.content }}</span></p>
+                                </div>
+                                <div class="modal-footer">
+                                    {{ delete_form.delete_submit(class="btn btn-xs btn-primary") }}&nbsp;
+                                    <button type="button" class="btn btn-danger btn-xs" data-dismiss="modal">
+                                        关闭
+                                    </button>
+                                </div>
+                            </form>
+                        {% endif %}
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+            <div class="modal fade" id="myModalModify{{ item.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                            </button>
+                            <h4 class="modal-title" id="myModalCvMainAttributeLabel">
+                                {% if create_label %}
+                                    {{ modify_label }} - {{ item.name }}
+                                {% else %}
+                                    修改
+                                {% endif %}
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            {% if modify_form %}
+                                {{ wtf.quick_form(modify_form[item.id]) }}
+                            {% endif %}
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        {% endfor %}
+
+    {% endif %}
+
+
+    <div class="modal fade" id="myModalCreate" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title" id="myModalCvMainAttributeLabel">
+                        添加日记
+                    </h4>
+                </div>
+
+                <div class="modal-body">
+                    {% if create_form %}
+                        <form method="post" role="form" class="form">
+                            {{ create_form.csrf_token }}
+                            <div class="row"><div class="col-sm-12"><div class="form-group">
+                                {{ create_form.work_project_id.label }}
+                                {{ create_form.work_project_id(class="form-control") }}
+                            </div></div></div>
+                            <div class="row"><div class="col-sm-12"><div class="form-group">
+                                {{ create_form.content.label }}
+                                {{ create_form.content(class="form-control") }}
+                            </div></div></div>
+
+                            <div class="row"><div class="col-sm-12"><div class="form-group">
+                                {{ create_form.work_diary_id(value=work_diary.id) }}
+                            </div></div></div>
+
+                            <div class="row"><div class="col-sm-12"><div class="form-group">
+                                {{ create_form.create_submit }}
+                                {{ create_form.cancel }}
+                            </div></div></div>
+                        </form>
+                    {% endif %}
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{% endblock %}
+
+
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='js/select2.4.0.0.min.js') }}"></script>
+
+    <script type="application/javascript">
+        $(document).ready(function() {
+            $('.select-control').select2();
+
+            var list_object = document.getElementsByClassName("select2-container");
+            for (var i =0; i<list_object.length; i++) {
+                list_object[i].style.width = "100%";
+            }
+
+            {# https://blog.csdn.net/john1337/article/details/53315969 #}
+            $.fn.modal.Constructor.prototype.enforceFocus = function () { }
+        });
+    </script>
+{% endblock %}

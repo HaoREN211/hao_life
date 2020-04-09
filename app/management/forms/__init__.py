@@ -10,6 +10,7 @@ from app.management.forms.estate import (EstateModifyForm,
                                          BuildingOwnerModifyForm, DistrictTimesModifyForm, ApartmentModifyForm)
 from app.management.forms.life.marathon import MarathonModifyForm
 from app.management.forms.work.salary import SalaryModifyForm
+from app.management.forms.work.work_diary import WorkDiaryDetailModifyForm
 from app.management.forms.general.upload import FileForm
 from app.management.forms.entertainment.music import MusicModifyForm, AlbumModifyForm, MusicTypeModifyForm
 from app.management.forms.life.train import TrainNumberModifyForm, TrainModifyForm
@@ -51,6 +52,8 @@ def modify_form_constructor(items, temp_form):
             modify_form = DistrictTimesModifyForm()
         elif temp_form == "ApartmentModifyForm":
             modify_form = ApartmentModifyForm()
+        elif temp_form == "WorkDiaryDetailModifyForm":
+            modify_form = WorkDiaryDetailModifyForm()
 
         for current_key in modify_form.__dict__.keys():
             if str(current_key).startswith("_"):

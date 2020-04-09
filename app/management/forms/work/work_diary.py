@@ -1,29 +1,72 @@
 # -*- coding: UTF-8 -*- 
 # 作者：hao.ren3
-# 时间：2020/4/8 18:01
+# 时间：2020/4/9 15:59
 # IDE：PyCharm
 
 from app.management.forms.movie import RenderForm
-from wtforms import StringField, SubmitField, SelectField, HiddenField, DecimalField, BooleanField, DateField
-from wtforms.validators import DataRequired, ValidationError, Length
-from app.models.diary import WorkDiary
+from wtforms import StringField, SubmitField, SelectField, HiddenField, TextAreaField
+from app.models.diary import WorkProject, WorkDiaryDetail
+from operator import and_
+from wtforms.validators import ValidationError
 
-class WorkDiaryCreateForm(RenderForm):
-    date = StringField("日期", validators=[DataRequired(), Length(max=100)])
-    create_submit = SubmitField("添加", render_kw={"class":"btn btn-xs btn-success"})
-    cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
-                                          "data-dismiss": "modal",
-                                          "type": "button"})
 
-    def validate_name(self, name):
-        list_word_diary = WorkDiary.query.filter_by(name=str(name.data).strip()).all()
-        if list_word_diary and (len(list_word_diary) > 0):
-            raise ValidationError('添加失败：《' + str(self.name.data) + '》已经存在，请挑选另外一个名字。')
-
-class WorkDiaryModifyForm(RenderForm):
+class WorkDiaryDetailModifyForm(RenderForm):
     id = HiddenField("主键")
-    name = StringField("名称", validators=[DataRequired(), Length(max=100)], default="  ")
-    modify_submit = SubmitField("修改", render_kw={"class":"btn btn-xs btn-success"})
+
+    work_diary_id = HiddenField()
+    work_project_id = SelectField("项目", coerce=int, choices=[(0, " ")], default=0,
+                                  render_kw={"class": "select-control"})
+    content = TextAreaField("内容")
+
+    modify_submit = SubmitField("修改", render_kw={"class": "btn btn-xs btn-success"})
     cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
                                           "data-dismiss": "modal",
                                           "type": "button"})
+
+    def __init__(self, *args, **kwargs):
+        super(WorkDiaryDetailModifyForm, self).__init__(*args, **kwargs)
+        self.work_project_id.choices.extend([(x.id, x.name) for x in WorkProject.query.all()])
+
+
+    def validate_work_project_id(self, work_project_id):
+        if(WorkDiaryDetail.query.filter(and_(and_(
+            WorkDiaryDetail.work_project_id==int(self.work_project_id.data),
+            WorkDiaryDetail.work_diary_id == int(self.work_diary_id.data)),
+            WorkDiaryDetail.id!=int(self.id.data)
+        )).count() > 0):
+            raise ValidationError('修改失败：重复项目')
+
+
+class WorkDiaryDetailDeleteForm(RenderForm):
+    id = HiddenField("主键")
+
+    delete_submit = SubmitField("删除", render_kw={"class": "btn btn-xs btn-success"})
+    cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
+                                          "data-dismiss": "modal",
+                                          "type": "button"})
+
+
+class WorkDiaryDetailCreateForm(RenderForm):
+    content = TextAreaField("内容")
+    work_diary_id = HiddenField()
+    work_project_id = SelectField("项目", coerce=int, choices=[(0, " ")], default=0,
+                                  render_kw={"class": "select-control"})
+
+
+    create_submit = SubmitField("添加", render_kw={"class": "btn btn-xs btn-success"})
+    cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
+                                          "data-dismiss": "modal",
+                                          "type": "button"})
+
+
+    def __init__(self, *args, **kwargs):
+        super(WorkDiaryDetailCreateForm, self).__init__(*args, **kwargs)
+        self.work_project_id.choices.extend([(x.id, x.name) for x in WorkProject.query.all()])
+
+
+    def validate_content(self, content):
+        if(WorkDiaryDetail.query.filter(and_(
+            WorkDiaryDetail.work_project_id==int(self.work_project_id.data),
+            WorkDiaryDetail.work_diary_id == int(self.work_diary_id.data)
+        )).count() >0):
+            raise ValidationError('添加失败：重复项目')
