@@ -19,7 +19,7 @@
                 <tr>
                     <td style="width: 60px">{{ work_diary_detail.order }}</td>
                     <td><table><tr><td>{{ work_diary_detail.work_project.name }}</td></tr>
-                        <tr><td>{{ work_diary_detail.content }}</td></tr></table>
+                        <tr><td>{{ work_diary_detail.content | md | safe }}</td></tr></table>
                     </td>
                     {% if current_user.is_authenticated and current_user.is_admin %}
                         <td>
@@ -74,7 +74,7 @@
                                     <div class="input-group col-sm-10">
                                         {{ delete_form.id(class="form-control", value=item.id) }}
                                     </div>
-                                    <p><span>{{ item.content }}</span></p>
+                                    <p><span>{{ item.content | md | safe }}</span></p>
                                 </div>
                                 <div class="modal-footer">
                                     {{ delete_form.delete_submit(class="btn btn-xs btn-primary") }}&nbsp;

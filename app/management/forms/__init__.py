@@ -17,6 +17,7 @@ from app.management.forms.life.train import TrainNumberModifyForm, TrainModifyFo
 import os
 from werkzeug.utils import secure_filename
 from app.tools import get_file_type, reform_datetime_local_with_datetime, is_date, is_timestamp
+from app.management.forms.work.work_diary import WorkProjectModifyForm
 
 
 # 重新构造修改的表单
@@ -54,6 +55,8 @@ def modify_form_constructor(items, temp_form):
             modify_form = ApartmentModifyForm()
         elif temp_form == "WorkDiaryDetailModifyForm":
             modify_form = WorkDiaryDetailModifyForm()
+        elif temp_form == "WorkProjectModifyForm":
+            modify_form = WorkProjectModifyForm()
 
         for current_key in modify_form.__dict__.keys():
             if str(current_key).startswith("_"):
@@ -77,7 +80,7 @@ def modify_form_constructor(items, temp_form):
     return list_modify_form
 
 # 根据修改的form修改数据库数据
-def modify_db(modify_form, db_model, url):
+def modify_db(modify_form, db_model, url, has_update=False):
     current_item = db_model.query.filter_by(id=int(modify_form.id.data)).first()
     is_modified = False
 
@@ -113,6 +116,8 @@ def modify_db(modify_form, db_model, url):
     if is_modified:
         if "update_time" in current_item.__dict__.keys():
             current_item.__setattr__("update_time", datetime.now())
+        if has_update:
+            current_item.update_time = datetime.now()
         flash("修改成功")
     else:
         flash("毫无任何修改")

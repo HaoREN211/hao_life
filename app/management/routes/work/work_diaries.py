@@ -14,7 +14,7 @@ from sqlalchemy import func
 from app.management.forms.work.work_diary import WorkDiaryDetailCreateForm, WorkDiaryDetailModifyForm, WorkDiaryDetailDeleteForm
 from app.management.routes.entertainment.movie import flash_form_errors
 from app.management.forms import modify_form_constructor
-from operator import and_
+import datetime as dt
 
 
 # 日记列表
@@ -43,7 +43,9 @@ def work_diary(id):
                              else int(db.session.query(WorkDiaryDetail.order).filter_by(work_diary_id=id).order_by(WorkDiaryDetail.order.desc()).first()[0])+1),
                     content = detail_create_form.content.data,
                     work_diary_id = id,
-                    work_project_id = int(detail_create_form.work_project_id.data)
+                    work_project_id = int(detail_create_form.work_project_id.data),
+                    create_time = dt.datetime.now(),
+                    update_time = dt.datetime.now()
                 ))
                 return redirect(url_for("management.work_diary", id=id))
 
@@ -63,6 +65,7 @@ def work_diary(id):
                     current_work_diary_detail.content = detail_modify_form.content.data
                     has_modify = True
                 if has_modify:
+                    current_work_diary_detail.update_time = dt.datetime.now()
                     flash("修改成功")
                 else:
                     flash("毫无任何修改")

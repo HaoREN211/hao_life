@@ -7,7 +7,30 @@ from app.management.forms.movie import RenderForm
 from wtforms import StringField, SubmitField, SelectField, HiddenField, TextAreaField
 from app.models.diary import WorkProject, WorkDiaryDetail
 from operator import and_
-from wtforms.validators import ValidationError
+from wtforms.validators import ValidationError, DataRequired, Length
+
+
+class WorkProjectCreateForm(RenderForm):
+    name = StringField("项目名称", validators=[DataRequired(), Length(max=50)])
+    start_date = StringField("开始日期", validators=[DataRequired()], render_kw={"type":"date"})
+    end_date = StringField("结束日期", validators=[DataRequired()], render_kw={"type":"date"})
+
+    create_submit = SubmitField("添加", render_kw={"class":"btn btn-xs btn-success"})
+    cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
+                                          "data-dismiss": "modal",
+                                          "type": "button"})
+
+class WorkProjectModifyForm(RenderForm):
+    id = HiddenField("项目主键")
+    name = StringField("项目名称", validators=[DataRequired(), Length(max=50)], default="  ")
+    start_date = StringField("开始日期", validators=[DataRequired()], render_kw={"type":"date"})
+    end_date = StringField("结束日期", validators=[DataRequired()], render_kw={"type":"date"})
+
+    modify_submit = SubmitField("修改", render_kw={"class":"btn btn-xs btn-success"})
+    cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
+                                          "data-dismiss": "modal",
+                                          "type": "button"})
+
 
 
 class WorkDiaryDetailModifyForm(RenderForm):
@@ -70,3 +93,6 @@ class WorkDiaryDetailCreateForm(RenderForm):
             WorkDiaryDetail.work_diary_id == int(self.work_diary_id.data)
         )).count() >0):
             raise ValidationError('添加失败：重复项目')
+
+
+

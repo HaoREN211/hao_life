@@ -34,6 +34,9 @@ class WorkProject(db.Model):
     start_date = db.Column(db.Date, nullable=True, comment="项目开始时间")
     end_date = db.Column(db.Date, nullable=True, comment="项目结束时间")
 
+    create_time = db.Column(db.DateTime, default=datetime.now(), nullable=False, comment="创建时间")
+    update_time = db.Column(db.DateTime, default=datetime.now(), nullable=False, comment="最后一次修改时间")
+
     @hybrid_property
     def details_cnt(self):
         return len(self.details)
@@ -54,3 +57,6 @@ class WorkDiaryDetail(db.Model):
 
     work_diary = db.relationship("WorkDiary", backref="details", foreign_keys=[work_diary_id])
     work_project = db.relationship("WorkProject", backref="details", foreign_keys=[work_project_id])
+
+    create_time = db.Column(db.DateTime, default=datetime.now(), nullable=False, comment="创建时间")
+    update_time = db.Column(db.DateTime, default=datetime.now(), nullable=False, comment="最后一次修改时间")

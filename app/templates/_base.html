@@ -124,9 +124,13 @@
                                 工作 <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="{{ url_for('management.salaries') }}"><span class="glyphicon glyphicon-list-alt"></span> 工资</a></li>
-                                <li class="divider"></li>
+                                {% if current_user.is_authenticated and current_user.is_admin %}
+                                    <li><a href="{{ url_for('management.salaries') }}"><span class="glyphicon glyphicon-list-alt"></span> 工资</a></li>
+                                    <li class="divider"></li>
+                                {% endif %}
                                 <li><a href="{{ url_for('management.work_diaries') }}"><span class="glyphicon glyphicon-edit"></span> 日记</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{{ url_for('management.work_projects') }}"><span class="glyphicon glyphicon-file"></span> 项目</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
