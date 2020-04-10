@@ -14,7 +14,7 @@
         </tr>
         </thead>
         {% for item in items %}
-            <tr>
+            <tr data-toggle="modal" data-target="#detail_{{ item.id }}">
                 <td>
                         {{ item.date.year }}年{{ item.date.month }}月{{ item.date.day }}日
                 </td>
@@ -50,6 +50,35 @@
             </li>
         </ul>
     </nav>
+
+    {% for item in items %}
+        <div class="modal fade" id="detail_{{ item.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                        </button>
+                        <h4 class="modal-title" id="myModalCvMainAttributeLabel">
+                            {{ item.date.year }}年{{ item.date.month }}月{{ item.date.day }}日的日记
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-hover">
+                            <thead><tr><th style="width: 60px">顺序</th><th>项目</th></tr></thead>
+                            {% for detail in details[item.id] %}
+                                <tr><td>{{ detail.order }}</td>
+                                    <td><table>
+                                        <tr><td>{{ detail.project_name }}:{{ detail.project_start_date }}-{{ detail.project_end_date }}</td></tr>
+                                        <tr><td>{{ detail.content | md | safe }}</td></tr>
+                                    </table></td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    {% endfor %}
 {% endblock %}
 
 

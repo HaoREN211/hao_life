@@ -111,5 +111,19 @@ def work_diaries():
     next_url = url_for('management.work_diaries', page=items.next_num) if items.has_next else None
     prev_url = url_for('management.work_diaries', page=items.prev_num) if items.has_prev else None
 
+    # 点击某日的日记记录时，能弹出当日的日记细节
+    item_details = {}
+    for current_item in items.items:
+        current_details = []
+        for current_item_details in current_item.details:
+            current_details.append({
+                "project_name": current_item_details.work_project.name,
+                "project_start_date": current_item_details.work_project.start_date,
+                "project_end_date": current_item_details.work_project.end_date,
+                "content": current_item_details.content,
+                "order": current_item_details.order
+            })
+        item_details[current_item.id] = current_details
+
     return render_template("work/work_diaries.html", items=items.items,
-                           next_url=next_url, prev_url=prev_url)
+                           next_url=next_url, prev_url=prev_url, details=item_details)
