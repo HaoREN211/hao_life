@@ -53,6 +53,15 @@ def work_projects():
     next_url = url_for('management.work_projects', page=items.next_num) if items.has_next else None
     prev_url = url_for('management.work_projects', page=items.prev_num) if items.has_prev else None
 
+    item_details = {}
+    for current_item in items.items:
+        current_details = []
+        for current_item_details in sorted(current_item.details, key=lambda x: x.work_diary.date, reverse=True):
+            current_details.append({
+                "date": current_item_details.work_diary.date,
+                "content": current_item_details.content
+            })
+        item_details[current_item.id] = current_details
     return render_template("work/work_projects.html", items=items.items,
                            next_url=next_url, prev_url=prev_url,
-                           add_form=add_form, delete_form=delete_form, modify_form=modify_form)
+                           add_form=add_form, delete_form=delete_form, modify_form=modify_form, details=item_details)
