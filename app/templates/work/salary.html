@@ -1,8 +1,26 @@
 {% extends '_base.html' %}
 
 {% block app_content %}
-
     <link rel="stylesheet" href="{{ url_for('static', filename='css/select2.min.css') }}" />
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="input-group">
+                <span class="input-group-addon">开始日期：</span>
+                {{ start_date_form.date(id="start_date", onChange="filter_date()") }}
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="input-group">
+                <span class="input-group-addon">结束日期：</span>
+                {{ end_date_form.date(id="end_date", onChange="filter_date()") }}
+            </div>
+        </div>
+    </div>
+
+
+    <div style="position: relative; top: 0; height: 500px; left: 0; right: 0">
+        <div id="e_chart_salary" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%"></div>
+    </div>
 
     {% if current_user.is_authenticated and current_user.is_admin %}
         {% include 'general/wtf_quick_form_create.html' %}
@@ -66,5 +84,19 @@
             {# https://blog.csdn.net/john1337/article/details/53315969 #}
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
         });
+    </script>
+
+    <script src="{{ url_for('static', filename='js/echarts.min.js') }}"></script>
+
+    <script type="application/javascript">
+        function filter_date() {
+            var start_date = document.getElementById("start_date").value;
+            var end_date = document.getElementById("end_date").value;
+            window.location.href="{{ curr_url }}"+"&start_date="+start_date+"&end_date="+end_date
+        }
+    </script>
+
+    <script type="application/javascript">
+        f_echarts_line('e_chart_salary', {{ e_chart_salary.date|tojson }}, {{ e_chart_salary.data }}, {{ e_chart_salary.data_min }}, {{ e_chart_salary.data_max }}, {{ e_chart_salary.interval }}, "税后工资", "税后工资(元)");
     </script>
 {% endblock %}

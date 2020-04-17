@@ -148,3 +148,12 @@ class MusicTypeModifyForm(RenderForm):
             list_id = [0 if int(x)==int(self.id.data) else 1 for x in list_id]
             if sum(list_id) > 0:
                 raise ValidationError('修改失败：《' + str(name.data) + '》已经存在，请挑选另外一个名字。')
+
+
+class MusicNamesForm(RenderForm):
+    name = SelectField("歌曲名称", coerce=int, choices=[(0, " ")], default=0,
+                              render_kw={"class": "select-control"})
+
+    def __init__(self, *args, **kwargs):
+        super(MusicNamesForm, self).__init__(*args, **kwargs)
+        self.name.choices.extend([(x.id, x.name) for x in Music.query.all()])

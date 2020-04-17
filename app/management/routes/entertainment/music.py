@@ -10,7 +10,8 @@ from app import db
 from app.management import bp
 from app.management.forms import modify_form_constructor, modify_db, create_db_row
 from app.management.forms.entertainment.music import (MusicCreateForm, MusicModifyForm, AlbumCreateForm,
-                                                      AlbumModifyForm, MusicTypeCreateForm, MusicTypeModifyForm)
+                                                      AlbumModifyForm, MusicTypeCreateForm, MusicTypeModifyForm,
+                                                      MusicNamesForm)
 from app.management.forms.movie import MovieDeleteForm
 from app.management.routes.entertainment.movie import flash_form_errors
 from app.models.music import Music, Album, MusicType
@@ -22,7 +23,13 @@ from sqlalchemy import desc
 @bp.route('/musics', methods=['GET', 'POST'])
 def musics():
     page = request.args.get('page', 1, type=int)
-    items = Music.query.order_by().paginate(page, 10, False)
+    music_id = request.args.get('music_id', 0, type=int)
+    items = Music.query.order_by().paginate(page, 10, False) if music_id==0 \
+        else Music.query.filter_by(id=music_id).paginate(page, 10, False)
+
+    music_names_form = MusicNamesForm()
+    music_names_form.name.data = music_id
+
 
     add_form = MusicCreateForm()
     delete_form = MovieDeleteForm()
@@ -65,7 +72,8 @@ def musics():
 
     return render_template("entertainment/music.html", items=items.items,
                            next_url=next_url, prev_url=prev_url,
-                           add_form=add_form, delete_form=delete_form, modify_form=modify_form)
+                           add_form=add_form, delete_form=delete_form, modify_form=modify_form,
+                           music_names_form=music_names_form)
 
 
 # 专辑列表

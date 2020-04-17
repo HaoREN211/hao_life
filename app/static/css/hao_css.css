@@ -6,7 +6,8 @@
     top: 0;
     bottom: 0;
     left: 0;
-    right: 0
+    right: 0;
+    display: inline;
 }
 
 .hao-tableau-div {
@@ -24,6 +25,17 @@
     left: 1%;
     width: 40%;
     height: 40%;
+    right: 41%;
+    float: left;
+}
+
+.hao-tableau-div-top-right {
+    position: relative;
+    top: 2%;
+    right: 1%;
+    height: 40%;
+    width: 57%;
+    float: right;
 }
 
 .hao-tableau-div-transparent {

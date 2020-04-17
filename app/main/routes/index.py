@@ -9,6 +9,7 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, current_user, logout_user
 from config import PageConfig
 from app.management.routes.financial_management import echarts_financial_management
+from app.management.routes.work.salary import e_chart_salary
 from app.models.user import User
 from app.main.forms.user import UserForm, LoginForm
 from werkzeug.urls import url_parse
@@ -17,7 +18,9 @@ from werkzeug.urls import url_parse
 @bp.route('/index', methods=['GET', 'POST'])
 def index():
     echarts_data = echarts_financial_management()
-    return render_template("index.html", title=PageConfig.TITLE, echarts_financial_management=echarts_data)
+    echarts_salary = e_chart_salary()
+    return render_template("index.html", title=PageConfig.TITLE, echarts_financial_management=echarts_data,
+                           e_chart_salary=echarts_salary)
 
 
 @bp.route('/register', methods=['GET', 'POST'])
