@@ -16,7 +16,7 @@ class Collect(db.Model):
     __table_args__ = {'comment': '链接收藏'}
     id = db.Column(BIGINT(unsigned=True), primary_key=True, comment="链接收藏主键")
     name = db.Column(db.String(100), unique=False, nullable=False, comment="链接收藏名称")
-    link = db.Column(db.String(1000), unique=True, nullable=False, comment="链接收藏地址")
+    link = db.Column(db.String(500), unique=True, nullable=False, comment="链接收藏地址")
 
     web_site_id = db.Column(BIGINT(unsigned=True), db.ForeignKey("web_site.id"), nullable=True, comment="网站主键")
     web_site = db.relationship("WebSite", backref="collects", foreign_keys=[web_site_id])
@@ -32,7 +32,7 @@ class WebSite(db.Model):
     __table_args__ = {'comment': '网址地址'}
     id = db.Column(BIGINT(unsigned=True), primary_key=True, comment="网站主键")
     name = db.Column(db.String(100), unique=False, nullable=True, comment="网站名称")
-    link = db.Column(db.String(1000), unique=True, nullable=False, comment="网站地址")
+    link = db.Column(db.String(500), unique=True, nullable=False, comment="网站地址")
 
     create_time = db.Column(db.DateTime, default=datetime.now(), nullable=False, comment="创建时间")
     update_time = db.Column(db.DateTime, default=datetime.now(), nullable=False, comment="最后一次修改时间")
