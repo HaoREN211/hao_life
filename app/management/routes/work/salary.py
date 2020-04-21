@@ -14,9 +14,11 @@ from app.management.forms import modify_form_constructor, modify_db, create_db_r
 from app.management.forms.movie import MovieDeleteForm
 from app.management.forms.work.salary import SalaryCreateForm, SalaryModifyForm
 from app.management.routes.entertainment.movie import flash_form_errors
-from app.models.salary import Salary
+from app.models.salary import Salary, WorkExperience
+from app.models.enterprise import Enterprise
 from app.management.forms.financial_management import HaoFinancialManagementDate
 from math import floor
+from sqlalchemy import func
 
 
 @bp.route('/salaries', methods=['GET', 'POST'])
@@ -32,12 +34,11 @@ def salaries():
     temp_modify_form = SalaryModifyForm()
 
     echarts_data = e_chart_salary(start_date, end_date)
-
     # e_chart折线图的默认开始时间和终止时间
     start_date_form = DateForm()
     end_date_form = DateForm()
-    start_date_form.date.data = start_date if start_date is not None else min(echarts_data.date)
-    end_date_form.date.data = end_date if end_date is not None else max(echarts_data.date)
+    start_date_form.date.data = start_date if (start_date is not None) and (start_date!='') else min(echarts_data.date)
+    end_date_form.date.data = end_date if (end_date is not None) and (end_date!="") else max(echarts_data.date)
 
     if request.method == "POST":
         if current_user.is_authenticated and current_user.is_admin:
@@ -84,14 +85,14 @@ def salaries():
                            next_url=next_url, prev_url=prev_url, curr_url=curr_url,
                            add_form=add_form, delete_form=delete_form, modify_form=modify_form,
                            start_date_form=start_date_form, end_date_form=end_date_form,
-                           e_chart_salary=echarts_data)
+                           e_chart_salary=echarts_data, pie_chart_salary=pie_chart_salary(start_date, end_date))
 
 def e_chart_salary(start_date=None, end_date=None):
-    if (start_date is None) and (end_date is None):
+    if (start_date is None or start_date=="") and (end_date is None or end_date==""):
         salaries = Salary.query.order_by(Salary.date).all()
-    elif end_date is None:
+    elif end_date is None or end_date=="":
         salaries = Salary.query.filter(Salary.date>=dt.strptime(start_date, "%Y-%m-%d")).order_by(Salary.date).all()
-    elif start_date is None:
+    elif start_date is None or start_date=="":
         salaries = Salary.query.filter(Salary.date <= dt.strptime(end_date, "%Y-%m-%d")).order_by(Salary.date).all()
     else:
         salaries = Salary.query.filter(and_(
@@ -114,3 +115,35 @@ def e_chart_salary(start_date=None, end_date=None):
         data_min=data_min,
         interval=interval
     )
+
+
+def pie_chart_salary(start_date=None, end_date=None):
+    if (start_date is None or start_date=="") and (end_date is None or end_date==""):
+        tt = (db.session.query(func.sum(Salary.salary_after_tax), Enterprise.short_name)
+          .join(WorkExperience, Salary.work_experience_id == WorkExperience.id)
+          .join(Enterprise, WorkExperience.enterprise_id == Enterprise.id).group_by(Enterprise.short_name).all())
+    elif end_date is None or end_date=="":
+        tt = (db.session.query(func.sum(Salary.salary_after_tax), Enterprise.short_name)
+              .join(WorkExperience, Salary.work_experience_id == WorkExperience.id)
+              .join(Enterprise, WorkExperience.enterprise_id == Enterprise.id).group_by(Enterprise.short_name)
+              .filter(Salary.date>=dt.strptime(start_date, "%Y-%m-%d")).all())
+    elif start_date is None or start_date=="":
+        tt = (db.session.query(func.sum(Salary.salary_after_tax), Enterprise.short_name)
+              .join(WorkExperience, Salary.work_experience_id == WorkExperience.id)
+              .join(Enterprise, WorkExperience.enterprise_id == Enterprise.id).group_by(Enterprise.short_name)
+              .filter(Salary.date <= dt.strptime(end_date, "%Y-%m-%d")).all())
+    else:
+        tt = (db.session.query(func.sum(Salary.salary_after_tax), Enterprise.short_name)
+              .join(WorkExperience, Salary.work_experience_id == WorkExperience.id)
+              .join(Enterprise, WorkExperience.enterprise_id == Enterprise.id).group_by(Enterprise.short_name)
+              .filter(and_(
+                    Salary.date>=dt.strptime(start_date, "%Y-%m-%d"),
+                    Salary.date<=dt.strptime(end_date, "%Y-%m-%d")
+                )).all())
+    data = []
+    for i in range(len(tt)):
+        data.append({"name": str(tt[i][1]), "value": float(tt[i][0])})
+    return {
+        "enterprise": [str(x[1]) for x in tt],
+        "data": data
+    }

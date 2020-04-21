@@ -17,9 +17,13 @@
         </div>
     </div>
 
-
     <div style="position: relative; top: 0; height: 500px; left: 0; right: 0">
-        <div id="e_chart_salary" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%"></div>
+        <div style="position: absolute; top: 15%; left: 0; right: 0; bottom: 0; width: 30%; float: left">
+            <div id="pie_chart_salary" style="position: relative; left: 0; top: 0; height: 100%; width: 100%"></div>
+        </div>
+        <div style="position: absolute; top: 0; left: 30%; right: 0; bottom: 0; width: 70%; float: right">
+            <div id="e_chart_salary" style="position: relative; left: 0; top: 0; height: 100%; width: 100%"></div>
+        </div>
     </div>
 
     {% if current_user.is_authenticated and current_user.is_admin %}
@@ -97,6 +101,7 @@
     </script>
 
     <script type="application/javascript">
-        f_echarts_line('e_chart_salary', {{ e_chart_salary.date|tojson }}, {{ e_chart_salary.data }}, {{ e_chart_salary.data_min }}, {{ e_chart_salary.data_max }}, {{ e_chart_salary.interval }}, "税后工资", "税后工资(元)");
+        f_pie_chart("pie_chart_salary", {{ pie_chart_salary.enterprise|tojson }}, {{ pie_chart_salary.data|tojson }}, "#323232");
+        f_echarts_line('e_chart_salary', {{ e_chart_salary.date|tojson }}, {{ e_chart_salary.data }}, {{ e_chart_salary.data_min }}, {{ e_chart_salary.data_max }}, {{ e_chart_salary.interval }}, "税后工资", "税后工资(元)", "#323232");
     </script>
 {% endblock %}

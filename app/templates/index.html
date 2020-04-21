@@ -4,12 +4,15 @@
         {{ super() }}
         <script src="{{ url_for('static',filename='js/echarts.min.js') }}"></script>
         <script src="{{ url_for("static", filename='js/tableau/hao_echarts_function.js') }}"></script>
+
         <script type="application/javascript">
-            f_echarts_financial_management('div_echarts_financial_management', {{ echarts_financial_management.date|tojson }}, {{ echarts_financial_management.data }}, {{ echarts_financial_management.data_min }}, {{ echarts_financial_management.data_max }}, {{ echarts_financial_management.interval }});
+            f_echarts_line('div_echarts_salary', {{ e_chart_salary.date|tojson }}, {{ e_chart_salary.data }}, {{ e_chart_salary.data_min }}, {{ e_chart_salary.data_max }}, {{ e_chart_salary.interval }}, "税后工资", "税后工资(元)", "#F0F8FF");
+            f_pie_chart("pie_chart_salary", {{ pie_chart_salary.enterprise|tojson }}, {{ pie_chart_salary.data|tojson }}, "#F0F8FF")
         </script>
 
         <script type="application/javascript">
-            f_echarts_line('div_echarts_salary', {{ e_chart_salary.date|tojson }}, {{ e_chart_salary.data }}, {{ e_chart_salary.data_min }}, {{ e_chart_salary.data_max }}, {{ e_chart_salary.interval }}, "税后工资", "税后工资(元)");
+            // 基于准备好的dom，初始化echarts实例
+
         </script>
     {% endblock %}
 
@@ -26,7 +29,7 @@
         <div class="hao-background-div"
              style="background-image: url({{ url_for('static', filename='background.jpg') }});">
             <div class="hao-tableau-div-top-left hao-tableau-div-transparent" >
-                <div class="hao-tableau-div" id="div_echarts_financial_management"></div>
+                <div class="hao-tableau-div" id="pie_chart_salary"></div>
             </div>
             <div class="hao-tableau-div-top-right hao-tableau-div-transparent" >
                 <div class="hao-tableau-div" id="div_echarts_salary"></div>
