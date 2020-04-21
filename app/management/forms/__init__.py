@@ -18,6 +18,8 @@ import os
 from werkzeug.utils import secure_filename
 from app.tools import get_file_type, reform_datetime_local_with_datetime, is_date, is_timestamp
 from app.management.forms.work.work_diary import WorkProjectModifyForm
+from app.management.forms.general.collect import CollectModifyForm, WebSiteModifyForm
+
 
 
 # 重新构造修改的表单
@@ -57,6 +59,10 @@ def modify_form_constructor(items, temp_form):
             modify_form = WorkDiaryDetailModifyForm()
         elif temp_form == "WorkProjectModifyForm":
             modify_form = WorkProjectModifyForm()
+        elif temp_form == "CollectModifyForm":
+            modify_form = CollectModifyForm()
+        elif temp_form == "WebSiteModifyForm":
+            modify_form = WebSiteModifyForm()
 
         for current_key in modify_form.__dict__.keys():
             if str(current_key).startswith("_"):
