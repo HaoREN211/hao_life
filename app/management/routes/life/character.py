@@ -14,7 +14,7 @@ from app.management.forms.movie import MovieDeleteForm
 from app.management.routes.entertainment.movie import flash_form_errors
 from app.management.forms.life.character import WeightCreateForm, WeightModifyForm, Weight
 from math import floor
-from datetime import datetime as dt
+import datetime as dt
 from operator import and_
 from app.management.forms.financial_management import HaoFinancialManagementDate
 
@@ -72,12 +72,32 @@ def weights():
                            next_url=next_url, prev_url=prev_url, curr_url=curr_url,
                            add_form=add_form, delete_form=delete_form, modify_form=modify_form,
                            start_date_form=start_date_form, end_date_form=end_date_form,
-                           e_chart_line=e_chart_line)
+                           e_chart_line=e_chart_line, e_chart_calendar_weight=e_chart_calendar_weight())
+
+# 日历图所需数据
+def e_chart_calendar_weight():
+    date_now = dt.datetime.now().date()
+    year = str(date_now.year)
+    month = str(date_now).split("-")[1]
+    first_day = dt.datetime.strptime(year+"-"+month+"-"+"01", "%Y-%m-%d").date()
+    last_day = first_day+dt.timedelta(days=31)
+
+    list_weights= [str(x[0]).split(" ")[0] for x in db.session.query(Weight.date).filter(and_(
+        Weight.date>=first_day, Weight.date<=last_day)).all()]
+
+    list_result = []
+    for i in range(31):
+        current_date = first_day+dt.timedelta(days=i)
+        if int(month)!=current_date.month:
+            break
+        current_result = [str(current_date), str(1) if str(current_date) in list_weights else ""]
+        list_result.append(current_result)
+    return {"range": year + "-" + month, "data":list_result}
 
 # 生成e_chart体重折线图的必须数据
 def e_chart_weight(start_date=None, end_date=None):
-    date_start_date = "1900-01-01" if ((start_date is None) or (start_date=="")) else dt.strptime(start_date, "%Y-%m-%d")
-    date_end_date = dt.now().date() if ((end_date is None) or (end_date == "")) else dt.strptime(end_date, "%Y-%m-%d")
+    date_start_date = "1900-01-01" if ((start_date is None) or (start_date=="")) else dt.datetime.strptime(start_date, "%Y-%m-%d")
+    date_end_date = dt.datetime.now().date() if ((end_date is None) or (end_date == "")) else dt.datetime.strptime(end_date, "%Y-%m-%d")
     datas = Weight.query.filter(and_(
         Weight.date>=date_start_date,
         Weight.date<=date_end_date

@@ -7,13 +7,9 @@
 
         <script type="application/javascript">
             f_echarts_line('div_echarts_salary', {{ e_chart_salary.date|tojson }}, {{ e_chart_salary.data }}, {{ e_chart_salary.data_min }}, {{ e_chart_salary.data_max }}, {{ e_chart_salary.interval }}, "税后工资", "税后工资(元)", "#F0F8FF");
-            f_pie_chart("pie_chart_salary", {{ pie_chart_salary.enterprise|tojson }}, {{ pie_chart_salary.data|tojson }}, "#F0F8FF")
+            f_pie_chart("pie_chart_salary", {{ pie_chart_salary.enterprise|tojson }}, {{ pie_chart_salary.data|tojson }}, "#F0F8FF");
             f_echarts_line('line_chart_weight', {{ e_chart_weight.date|tojson }}, {{ e_chart_weight.data }}, {{ e_chart_weight.data_min }}, {{ e_chart_weight.data_max }}, {{ e_chart_weight.interval }}, "体重变化图", "体重(千克)", "#F0F8FF");
-        </script>
-
-        <script type="application/javascript">
-            // 基于准备好的dom，初始化echarts实例
-
+            f_echarts_calendar("div_e_charts_calendar_weight", '{{ e_chart_calendar_weight.range }}', {{ e_chart_calendar_weight.data|tojson }}, '体重签到日期', '#F0F8FF');
         </script>
     {% endblock %}
 
@@ -39,7 +35,12 @@
             </div>
             <div class="row" style="height: 20px"></div>
             <div class="row" style="height: 300px">
-                <div class="hao-tableau-div-top-all hao-tableau-div-transparent" >
+                <div class="hao-tableau-div-top-left hao-tableau-div-transparent" >
+                    <div style="height: 400px">
+                        <div class="hao-tableau-div" id="div_e_charts_calendar_weight"></div>
+                    </div>
+                </div>
+                <div class="hao-tableau-div-top-right hao-tableau-div-transparent" >
                     <div class="hao-tableau-div" id="line_chart_weight"></div>
                 </div>
             </div>
