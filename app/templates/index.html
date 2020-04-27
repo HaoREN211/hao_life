@@ -8,6 +8,7 @@
         <script type="application/javascript">
             f_echarts_line('div_echarts_salary', {{ e_chart_salary.date|tojson }}, {{ e_chart_salary.data }}, {{ e_chart_salary.data_min }}, {{ e_chart_salary.data_max }}, {{ e_chart_salary.interval }}, "税后工资", "税后工资(元)", "#F0F8FF");
             f_pie_chart("pie_chart_salary", {{ pie_chart_salary.enterprise|tojson }}, {{ pie_chart_salary.data|tojson }}, "#F0F8FF")
+            f_echarts_line('line_chart_weight', {{ e_chart_weight.date|tojson }}, {{ e_chart_weight.data }}, {{ e_chart_weight.data_min }}, {{ e_chart_weight.data_max }}, {{ e_chart_weight.interval }}, "体重变化图", "体重(千克)", "#F0F8FF");
         </script>
 
         <script type="application/javascript">
@@ -28,11 +29,19 @@
         <link rel="stylesheet" href="{{ url_for('static',filename='css/hao_css.css') }}"/>
         <div class="hao-background-div"
              style="background-image: url({{ url_for('static', filename='background.jpg') }});">
-            <div class="hao-tableau-div-top-left hao-tableau-div-transparent" >
-                <div class="hao-tableau-div" id="pie_chart_salary"></div>
+            <div class="row" style="height: 250px">
+                <div class="hao-tableau-div-top-left hao-tableau-div-transparent" >
+                    <div class="hao-tableau-div" id="pie_chart_salary"></div>
+                </div>
+                <div class="hao-tableau-div-top-right hao-tableau-div-transparent" >
+                    <div class="hao-tableau-div" id="div_echarts_salary"></div>
+                </div>
             </div>
-            <div class="hao-tableau-div-top-right hao-tableau-div-transparent" >
-                <div class="hao-tableau-div" id="div_echarts_salary"></div>
+            <div class="row" style="height: 20px"></div>
+            <div class="row" style="height: 300px">
+                <div class="hao-tableau-div-top-all hao-tableau-div-transparent" >
+                    <div class="hao-tableau-div" id="line_chart_weight"></div>
+                </div>
             </div>
         </div>
     {% endblock %}

@@ -24,8 +24,17 @@
     top: 2%;
     left: 1%;
     width: 30%;
-    height: 40%;
+    height: 100%;
     right: 41%;
+    float: left;
+}
+
+.hao-tableau-div-top-all {
+    position: relative;
+    top: 2%;
+    left: 1%;
+    width: 98%;
+    height: 100%;
     float: left;
 }
 
@@ -33,7 +42,7 @@
     position: relative;
     top: 2%;
     right: 1%;
-    height: 40%;
+    height: 100%;
     width: 67%;
     float: right;
 }

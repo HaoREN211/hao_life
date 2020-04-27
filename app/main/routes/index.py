@@ -13,12 +13,14 @@ from app.management.routes.work.salary import e_chart_salary, pie_chart_salary
 from app.models.user import User
 from app.main.forms.user import UserForm, LoginForm
 from werkzeug.urls import url_parse
+from app.management.routes.life.character import e_chart_weight
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
 def index():
     return render_template("index.html", title=PageConfig.TITLE,
-                           e_chart_salary= e_chart_salary(), pie_chart_salary=pie_chart_salary())
+                           e_chart_salary= e_chart_salary(), pie_chart_salary=pie_chart_salary(),
+                           e_chart_weight=e_chart_weight())
 
 
 @bp.route('/register', methods=['GET', 'POST'])

@@ -19,6 +19,7 @@ from werkzeug.utils import secure_filename
 from app.tools import get_file_type, reform_datetime_local_with_datetime, is_date, is_timestamp
 from app.management.forms.work.work_diary import WorkProjectModifyForm
 from app.management.forms.general.collect import CollectModifyForm, WebSiteModifyForm
+from app.management.forms.life.character import WeightModifyForm
 
 
 
@@ -63,6 +64,8 @@ def modify_form_constructor(items, temp_form):
             modify_form = CollectModifyForm()
         elif temp_form == "WebSiteModifyForm":
             modify_form = WebSiteModifyForm()
+        elif temp_form == "WeightModifyForm":
+            modify_form = WeightModifyForm()
 
         for current_key in modify_form.__dict__.keys():
             if str(current_key).startswith("_"):

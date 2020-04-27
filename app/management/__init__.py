@@ -14,3 +14,4 @@ from app.management.routes.consume import consume, consume_way, consume_type, co
 from app.management.routes.general import constellation, person, shop, enterprise, collect
 from app.management.routes.location import province, country, city, dristrict
 from app.management.routes.work import salary, work_diaries, work_project
+from app.management.routes.life.character import weights
