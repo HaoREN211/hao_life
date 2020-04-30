@@ -7,6 +7,7 @@ from app import db
 from sqlalchemy.dialects.mysql import BIGINT
 from datetime import datetime
 from sqlalchemy.ext.hybrid import hybrid_property
+from config import CURRENT_WORK_EXPERIENCE_ID
 
 
 class Position(db.Model):
@@ -43,7 +44,7 @@ class Salary(db.Model):
     id = db.Column(BIGINT(unsigned=True), primary_key=True, comment="工资主键")
     date = db.Column(db.DateTime, nullable=False, comment="领工资时间")
     work_experience_id = db.Column(BIGINT(unsigned=True), db.ForeignKey("work_experience.id"),
-                                   nullable=False, comment="工作经历主键")
+                                   nullable=False, comment="工作经历主键", default=CURRENT_WORK_EXPERIENCE_ID)
     basic_salary = db.Column(db.DECIMAL(10, 2), nullable=False, comment="基本工资")
     personal_endowment = db.Column(db.DECIMAL(10, 2), nullable=False, comment="个人养老保险")
     personal_medical = db.Column(db.DECIMAL(10, 2), nullable=False, comment="个人医疗保险")

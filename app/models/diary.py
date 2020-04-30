@@ -8,6 +8,7 @@ from sqlalchemy.dialects.mysql import BIGINT
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy import select
 from  sqlalchemy.sql import func
+from config import CURRENT_WORK_EXPERIENCE_ID
 
 # 工作日志
 class WorkDiary(db.Model):
@@ -15,7 +16,7 @@ class WorkDiary(db.Model):
     id = db.Column(BIGINT(unsigned=True), primary_key=True, comment="日记主键", autoincrement=True)
     date = db.Column(db.Date, nullable=False, comment="日期")
     work_experience_id = db.Column(BIGINT(unsigned=True), db.ForeignKey("work_experience.id"), nullable=False,
-                                   comment="经历主键", default=2)
+                                   comment="经历主键", default=CURRENT_WORK_EXPERIENCE_ID)
     work_experience = db.relationship("WorkExperience", backref="details", foreign_keys=[work_experience_id])
     create_time = db.Column(db.DateTime, default=datetime.utcnow(), comment="创建时间")
 

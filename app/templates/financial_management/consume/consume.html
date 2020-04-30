@@ -5,6 +5,27 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/select2.min.css') }}" />
 
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="input-group">
+                <span class="input-group-addon">开始日期：</span>
+                {{ start_date_form.date(id="start_date", onChange="filter_date()") }}
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="input-group">
+                <span class="input-group-addon">结束日期：</span>
+                {{ end_date_form.date(id="end_date", onChange="filter_date()") }}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="div_e_chart_line_consume" style="height: 500px; width: 100%"></div>
+        </div>
+    </div>
+
     {% if current_user.is_authenticated and current_user.is_admin %}
         <input type="button" class="btn btn-xs btn-success" value="添加"
                 data-toggle="modal" data-target="#myModalCreate">
@@ -146,6 +167,7 @@
 {% block scripts %}
     {{ super() }}
     <script src="{{ url_for('static', filename='js/select2.4.0.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/echarts.min.js') }}"></script>
 
     <script type="application/javascript">
         $(document).ready(function() {
@@ -159,5 +181,13 @@
             {# https://blog.csdn.net/john1337/article/details/53315969 #}
             $.fn.modal.Constructor.prototype.enforceFocus = function () { }
         });
+
+        function filter_date() {
+            var start_date = document.getElementById("start_date").value;
+            var end_date = document.getElementById("end_date").value;
+            window.location.href="{{ curr_url }}"+"&start_date="+start_date+"&end_date="+end_date
+        }
+
+        f_echarts_line('div_e_chart_line_consume', {{ e_chart_line_consume.date|tojson }}, {{ e_chart_line_consume.data }}, {{ e_chart_line_consume.data_min }}, {{ e_chart_line_consume.data_max }}, {{ e_chart_line_consume.interval }}, "消费明细表", "消费(元)", "#323232");
     </script>
 {% endblock %}

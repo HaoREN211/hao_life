@@ -13,10 +13,8 @@ from app.management.forms import modify_form_constructor, modify_db, create_db_r
 from app.management.forms.movie import MovieDeleteForm
 from app.management.routes.entertainment.movie import flash_form_errors
 from app.management.forms.life.character import WeightCreateForm, WeightModifyForm, Weight
-from math import floor
-import datetime as dt
-from operator import and_
-from app.management.forms.financial_management import HaoFinancialManagementDate
+from app.management.e_echart import e_chart_line, e_chart_calendar, data_form_generator
+
 
 # 体重
 @bp.route('/weights', methods=['GET', 'POST'])
@@ -25,12 +23,8 @@ def weights():
     start_date = request.args.get('start_date', None, type=str)
     end_date = request.args.get('end_date', None, type=str)
 
-    e_chart_line = e_chart_weight(start_date, end_date)
-
-    start_date_form = DateForm()
-    start_date_form.date.data = min(e_chart_line.date) if ((start_date is None) or (start_date=="")) else start_date
-    end_date_form = DateForm()
-    end_date_form.date.data = max(e_chart_line.date) if ((end_date is None) or (end_date=="")) else end_date
+    e_chart_line_weight = e_chart_weight(start_date, end_date)
+    start_date_form, end_date_form = data_form_generator(e_chart_line_weight, start_date, end_date)
 
     items = Weight.query.order_by(Weight.date.desc()).paginate(page, 10, False)
 
@@ -72,50 +66,13 @@ def weights():
                            next_url=next_url, prev_url=prev_url, curr_url=curr_url,
                            add_form=add_form, delete_form=delete_form, modify_form=modify_form,
                            start_date_form=start_date_form, end_date_form=end_date_form,
-                           e_chart_line=e_chart_line, e_chart_calendar_weight=e_chart_calendar_weight())
+                           e_chart_line=e_chart_line_weight, e_chart_calendar_weight=e_chart_calendar_weight())
 
 # 日历图所需数据
 def e_chart_calendar_weight():
-    date_now = dt.datetime.now().date()
-    year = str(date_now.year)
-    month = str(date_now).split("-")[1]
-    first_day = dt.datetime.strptime(year+"-"+month+"-"+"01", "%Y-%m-%d").date()
-    last_day = first_day+dt.timedelta(days=31)
-
-    list_weights= [str(x[0]).split(" ")[0] for x in db.session.query(Weight.date).filter(and_(
-        Weight.date>=first_day, Weight.date<=last_day)).all()]
-
-    list_result = []
-    for i in range(31):
-        current_date = first_day+dt.timedelta(days=i)
-        if int(month)!=current_date.month:
-            break
-        current_result = [str(current_date), str(1) if str(current_date) in list_weights else ""]
-        list_result.append(current_result)
-    return {"range": year + "-" + month, "data":list_result}
+    return e_chart_calendar("weight")
 
 # 生成e_chart体重折线图的必须数据
 def e_chart_weight(start_date=None, end_date=None):
-    date_start_date = "1900-01-01" if ((start_date is None) or (start_date=="")) else dt.datetime.strptime(start_date, "%Y-%m-%d")
-    date_end_date = dt.datetime.now().date() if ((end_date is None) or (end_date == "")) else dt.datetime.strptime(end_date, "%Y-%m-%d")
-    datas = Weight.query.filter(and_(
-        Weight.date>=date_start_date,
-        Weight.date<=date_end_date
-    )).order_by(Weight.date).all()
-    list_date, list_data = list([]), list([])
-    for date in datas:
-        list_date.append(date.date)
-        list_data.append(date.weight)
-    list_data = [float(x) for x in list_data]
-    list_date = [x.strftime("%Y-%m-%d") for x in list_date]
-    data_max = max(list_data) if len(list_data) > 0 else 0
-    data_min = min(list_data) if len(list_data) > 0 else 0
-    interval = int(floor(float(data_max - data_min) / float(5)) + 1)
-    return HaoFinancialManagementDate(
-        date=list_date,
-        data=list_data,
-        data_max=data_max,
-        data_min=data_min,
-        interval=interval
-    )
+    return e_chart_line("weight", start_date, end_date)
 

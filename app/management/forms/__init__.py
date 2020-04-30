@@ -20,6 +20,7 @@ from app.tools import get_file_type, reform_datetime_local_with_datetime, is_dat
 from app.management.forms.work.work_diary import WorkProjectModifyForm
 from app.management.forms.general.collect import CollectModifyForm, WebSiteModifyForm
 from app.management.forms.life.character import WeightModifyForm
+from app.management.forms.work.clock_in import ClockInModifyForm
 
 
 
@@ -66,6 +67,8 @@ def modify_form_constructor(items, temp_form):
             modify_form = WebSiteModifyForm()
         elif temp_form == "WeightModifyForm":
             modify_form = WeightModifyForm()
+        elif temp_form == "ClockInModifyForm":
+            modify_form = ClockInModifyForm()
 
         for current_key in modify_form.__dict__.keys():
             if str(current_key).startswith("_"):

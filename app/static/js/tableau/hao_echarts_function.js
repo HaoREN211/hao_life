@@ -224,7 +224,7 @@ function f_echarts_calendar(div_name, data_range, data, title, color) {
                 left: '2%',
                 right: '2%',
                 top: "20%",
-                height:"50%",
+                height:"70%",
                 cellSize: [70, 70],
                 yearLabel: {show: false},
                 orient: 'vertical',

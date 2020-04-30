@@ -15,7 +15,7 @@ from app.management.forms.movie import MovieDeleteForm
 from app.management.routes.entertainment.movie import flash_form_errors
 from app.models.consume import Consume
 from app.tools import reform_datetime_local_with_datetime
-
+from app.management.e_echart import e_chart_line, data_form_generator
 
 # 消费列表
 @bp.route('/consumes', methods=['GET', 'POST'])
@@ -25,6 +25,11 @@ def consumes():
     delete_form = MovieDeleteForm()
 
     page = request.args.get('page', 1, type=int)
+    start_date = request.args.get('start_date', None, type=str)
+    end_date = request.args.get('end_date', None, type=str)
+
+    e_chart_line_consume_data = e_chart_line_consume(start_date, end_date)
+    start_date_form, end_date_form = data_form_generator(e_chart_line_consume_data, start_date, end_date)
     list_consumes = Consume.query.order_by(Consume.time.desc()).paginate(page, 10, False)
 
     if request.method == "POST":
@@ -50,12 +55,19 @@ def consumes():
 
     modify_form = modify_form_constructor(list_consumes)
 
-    next_url = url_for('management.consumes', page=list_consumes.next_num) if list_consumes.has_next else None
-    prev_url = url_for('management.consumes', page=list_consumes.prev_num) if list_consumes.has_prev else None
+    next_url = url_for('management.consumes', page=list_consumes.next_num, start_date=start_date_form.date.data, end_date=end_date_form.date.data) if list_consumes.has_next else None
+    prev_url = url_for('management.consumes', page=list_consumes.prev_num, start_date=start_date_form.date.data, end_date=end_date_form.date.data) if list_consumes.has_prev else None
+    curr_url = url_for('management.consumes', page=page)
 
     return render_template("financial_management/consume/consume.html", items = list_consumes.items,
-                            next_url=next_url, prev_url=prev_url,
+                            next_url=next_url, prev_url=prev_url, curr_url=curr_url,
+                           e_chart_line_consume = e_chart_line_consume_data,
+                           start_date_form=start_date_form, end_date_form=end_date_form,
                            add_form=add_form, modify_form=modify_form, delete_form=delete_form)
+
+
+def e_chart_line_consume(start_date=None, end_date=None):
+    return e_chart_line("consume", start_date, end_date)
 
 
 # 添加消费
