@@ -14,6 +14,9 @@
             f_echarts_calendar("div_e_charts_calendar_weight", '{{ e_chart_calendar_weight.range }}', {{ e_chart_calendar_weight.data|tojson }}, '体重签到日期', '#F0F8FF');
             f_echarts_line('div_e_chart_line_clock_in', {{ e_chart_line_clock_in.date|tojson }}, {{ e_chart_line_clock_in.data }}, {{ e_chart_line_clock_in.data_min }}, {{ e_chart_line_clock_in.data_max }}, {{ e_chart_line_clock_in.interval }}, "工时图", "工时(小时)", "#F0F8FF");
             f_echarts_calendar("div_e_chart_calendar_clock_in", '{{ e_chart_calendar_clock_in.range }}', {{ e_chart_calendar_clock_in.data|tojson }}, '签到表', '#F0F8FF');
+            e_chart_doughnut("e_chart_pie_consume_by_type", '消费种类组成', "#F0F8FF", {{ e_chart_pie_consume_by_type.name|tojson }}, {{ e_chart_pie_consume_by_type.data|tojson }});
+            e_chart_doughnut("e_chart_pie_consume_by_way", '支付方式组成', "#F0F8FF", {{ e_chart_pie_consume_by_way.name|tojson }}, {{ e_chart_pie_consume_by_way.data|tojson }});
+            f_echarts_line('e_chart_line_consume', {{ e_chart_line_consume.date|tojson }}, {{ e_chart_line_consume.data }}, {{ e_chart_line_consume.data_min }}, {{ e_chart_line_consume.data_max }}, {{ e_chart_line_consume.interval }}, "消费明细表", "消费(元)", "#F0F8FF");
         </script>
     {% endblock %}
 
@@ -40,6 +43,23 @@
                     <div class="hao-tableau-div" id="line_chart_weight"></div>
                 </div>
             </div>
+
+            <div class="row" style="height: 10px"></div>
+
+            <div class="row" style="height: 300px">
+                <div class="hao-tableau-div-top-left-1-3 hao-tableau-div-transparent" >
+                    <div style="height: 300px">
+                        <div class="hao-tableau-div" id="e_chart_pie_consume_by_type"></div>
+                    </div>
+                </div>
+                <div class="hao-tableau-div-top-middle-1-3 hao-tableau-div-transparent" >
+                    <div class="hao-tableau-div" id="e_chart_line_consume"></div>
+                </div>
+                <div class="hao-tableau-div-top-right-1-3 hao-tableau-div-transparent" >
+                    <div class="hao-tableau-div" id="e_chart_pie_consume_by_way"></div>
+                </div>
+            </div>
+
 
             <div class="row" style="height: 10px"></div>
 

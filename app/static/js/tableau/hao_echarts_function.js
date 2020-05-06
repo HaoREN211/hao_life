@@ -260,3 +260,53 @@ function f_echarts_calendar(div_name, data_range, data, title, color) {
         myChartTest.setOption(optionTest);
     }
 
+
+function e_chart_doughnut(div_id, title, color, names, data) {
+        var myChart = echarts.init(document.getElementById(div_id));
+        var option = {
+            title: {
+                text: title,
+                left: 'center',
+                top: "5%",
+                textStyle :{
+                    color: color
+                }
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: '{b} : {c} ({d}%)'
+            },
+            legend: {
+                left: 'center',
+                top: 'bottom',
+                data: names,
+                textStyle :{
+                    color: color
+                }
+            },
+            toolbox: {
+                show: false,
+                feature: {
+                    mark: {show: false},
+                    dataView: {show: false, readOnly: false},
+                    magicType: {
+                        show: false,
+                        type: ['pie', 'funnel']
+                    },
+                    restore: {show: false},
+                    saveAsImage: {show: false}
+                }
+            },
+            series: [
+                {
+                    name: '面积模式',
+                    type: 'pie',
+                    radius: [30, 110],
+                    center: ['50%', '50%'],
+                    roseType: 'area',
+                    data: data
+                }
+            ]
+        };
+        myChart.setOption(option)
+    }

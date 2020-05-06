@@ -13,9 +13,12 @@ from app.management import bp
 from app.management.forms.consume import ConsumeCreateForm, ConsumeModifyForm
 from app.management.forms.movie import MovieDeleteForm
 from app.management.routes.entertainment.movie import flash_form_errors
-from app.models.consume import Consume
+from app.models.consume import Consume, ConsumeType, ConsumeWay, ConsumePlate
 from app.tools import reform_datetime_local_with_datetime
 from app.management.e_echart import e_chart_line, data_form_generator
+import datetime as dt
+from sqlalchemy import func
+from operator import and_
 
 # 消费列表
 @bp.route('/consumes', methods=['GET', 'POST'])
@@ -55,19 +58,56 @@ def consumes():
 
     modify_form = modify_form_constructor(list_consumes)
 
+
+
     next_url = url_for('management.consumes', page=list_consumes.next_num, start_date=start_date_form.date.data, end_date=end_date_form.date.data) if list_consumes.has_next else None
     prev_url = url_for('management.consumes', page=list_consumes.prev_num, start_date=start_date_form.date.data, end_date=end_date_form.date.data) if list_consumes.has_prev else None
     curr_url = url_for('management.consumes', page=page)
 
     return render_template("financial_management/consume/consume.html", items = list_consumes.items,
-                            next_url=next_url, prev_url=prev_url, curr_url=curr_url,
-                           e_chart_line_consume = e_chart_line_consume_data,
-                           start_date_form=start_date_form, end_date_form=end_date_form,
-                           add_form=add_form, modify_form=modify_form, delete_form=delete_form)
+        next_url=next_url, prev_url=prev_url, curr_url=curr_url,
+        e_chart_line_consume = e_chart_line_consume_data,
+        start_date_form=start_date_form, end_date_form=end_date_form,
+        e_chart_pie_consume_by_type = e_chart_pie_consume_by_type(start_date_form.date.data, end_date_form.date.data),
+        e_chart_pie_consume_by_way=e_chart_pie_consume_by_way(start_date_form.date.data, end_date_form.date.data),
+        add_form=add_form, modify_form=modify_form, delete_form=delete_form)
 
 
 def e_chart_line_consume(start_date=None, end_date=None):
     return e_chart_line("consume", start_date, end_date)
+
+def e_chart_pie_consume_by_type(start_date=None, end_date=None):
+    date_start_date = dt.datetime.strptime("1900-01-01", "%Y-%m-%d") if ((start_date is None) or (start_date == "")) else dt.datetime.strptime(start_date, "%Y-%m-%d")
+    date_end_date = dt.datetime.strptime("2222-02-22", "%Y-%m-%d") if ((end_date is None) or (end_date == "")) else dt.datetime.strptime(end_date, "%Y-%m-%d")
+
+    target = (db.session.query(func.sum(Consume.amount).label("total_amount"), ConsumeType.name)
+            .join(ConsumeType, Consume.type_id==ConsumeType.id)
+            .filter(and_(Consume.time>=date_start_date, Consume.time<=date_end_date))
+            .group_by(ConsumeType.name))
+    list_name = []
+    list_data = []
+    if target.count() > 0:
+        for value, name in target.all():
+            list_name.append(name)
+            list_data.append({"value": float(value), "name": name})
+    return {"name": list_name, "data": list_data}
+
+
+def e_chart_pie_consume_by_way(start_date=None, end_date=None):
+    date_start_date = dt.datetime.strptime("1900-01-01", "%Y-%m-%d") if ((start_date is None) or (start_date == "")) else dt.datetime.strptime(start_date, "%Y-%m-%d")
+    date_end_date = dt.datetime.strptime("2222-02-22", "%Y-%m-%d") if ((end_date is None) or (end_date == "")) else dt.datetime.strptime(end_date, "%Y-%m-%d")
+
+    target = (db.session.query(func.sum(Consume.amount).label("total_amount"), ConsumeWay.name)
+            .join(ConsumeWay, Consume.way_id==ConsumeWay.id)
+            .filter(and_(Consume.time>=date_start_date, Consume.time<=date_end_date))
+            .group_by(ConsumeWay.name))
+    list_name = []
+    list_data = []
+    if target.count() > 0:
+        for value, name in target.all():
+            list_name.append(name)
+            list_data.append({"value": float(value), "name": name})
+    return {"name": list_name, "data": list_data}
 
 
 # 添加消费

@@ -21,6 +21,14 @@
     </div>
 
     <div class="row">
+        <div class="col-sm-6">
+            <div id="e_chart_pie_consume_by_type" style="height: 500px; width: 100%"></div>
+        </div>
+        <div class="col-sm-6">
+            <div id="e_chart_pie_consume_by_way" style="height: 500px; width: 100%"></div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-sm-12">
             <div id="div_e_chart_line_consume" style="height: 500px; width: 100%"></div>
         </div>
@@ -189,5 +197,7 @@
         }
 
         f_echarts_line('div_e_chart_line_consume', {{ e_chart_line_consume.date|tojson }}, {{ e_chart_line_consume.data }}, {{ e_chart_line_consume.data_min }}, {{ e_chart_line_consume.data_max }}, {{ e_chart_line_consume.interval }}, "消费明细表", "消费(元)", "#323232");
+        e_chart_doughnut("e_chart_pie_consume_by_type", '消费种类组成', "#000000", {{ e_chart_pie_consume_by_type.name|tojson }}, {{ e_chart_pie_consume_by_type.data|tojson }});
+        e_chart_doughnut("e_chart_pie_consume_by_way", '支付方式组成', "#000000", {{ e_chart_pie_consume_by_way.name|tojson }}, {{ e_chart_pie_consume_by_way.data|tojson }});
     </script>
 {% endblock %}

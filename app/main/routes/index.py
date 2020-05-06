@@ -14,6 +14,8 @@ from app.main.forms.user import UserForm, LoginForm
 from werkzeug.urls import url_parse
 from app.management.routes.life.character import e_chart_weight, e_chart_calendar_weight
 from app.management.routes.work.clock_in import e_chart_calendar_clock_in, e_chart_line_clock_in
+from app.management.routes.consume.consume import e_chart_pie_consume_by_type, e_chart_line_consume, e_chart_pie_consume_by_way
+
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
@@ -22,6 +24,9 @@ def index():
                            e_chart_salary= e_chart_salary(), pie_chart_salary=pie_chart_salary(),
                            e_chart_weight=e_chart_weight(), e_chart_calendar_weight=e_chart_calendar_weight(),
                            e_chart_calendar_clock_in=e_chart_calendar_clock_in(),
+                           e_chart_pie_consume_by_type=e_chart_pie_consume_by_type(),
+                           e_chart_pie_consume_by_way=e_chart_pie_consume_by_way(),
+                           e_chart_line_consume = e_chart_line_consume(),
                            e_chart_line_clock_in = e_chart_line_clock_in())
 
 
