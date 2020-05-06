@@ -17,7 +17,7 @@ from app.models.consume import Consume, ConsumeType, ConsumeWay, ConsumePlate
 from app.tools import reform_datetime_local_with_datetime
 from app.management.e_echart import e_chart_line, data_form_generator
 import datetime as dt
-from sqlalchemy import func
+from sqlalchemy import func, cast, Date
 from operator import and_
 
 # 消费列表
@@ -82,7 +82,7 @@ def e_chart_pie_consume_by_type(start_date=None, end_date=None):
 
     target = (db.session.query(func.sum(Consume.amount).label("total_amount"), ConsumeType.name)
             .join(ConsumeType, Consume.type_id==ConsumeType.id)
-            .filter(and_(Consume.time>=date_start_date, Consume.time<=date_end_date))
+            .filter(and_(cast(Consume.time, Date)>=date_start_date, cast(Consume.time, Date)<=date_end_date))
             .group_by(ConsumeType.name))
     list_name = []
     list_data = []
@@ -99,7 +99,7 @@ def e_chart_pie_consume_by_way(start_date=None, end_date=None):
 
     target = (db.session.query(func.sum(Consume.amount).label("total_amount"), ConsumeWay.name)
             .join(ConsumeWay, Consume.way_id==ConsumeWay.id)
-            .filter(and_(Consume.time>=date_start_date, Consume.time<=date_end_date))
+            .filter(and_(cast(Consume.time, Date)>=date_start_date, cast(Consume.time, Date)<=date_end_date))
             .group_by(ConsumeWay.name))
     list_name = []
     list_data = []

@@ -12,6 +12,7 @@ from app.management.forms.life.character import Weight
 from app import db
 from app.management.forms.pattern import DateForm
 from app.models.consume import Consume
+from sqlalchemy import cast, Date, func
 
 
 # 根据data里面的时间列表，生成最早时间和最晚时间的表单
@@ -28,7 +29,7 @@ def data_form_generator(data, start_date, end_date):
 # 生成e_chart折线图的必须数据
 def e_chart_line(model, start_date=None, end_date=None):
     date_start_date = "1900-01-01" if ((start_date is None) or (start_date=="")) else dt.datetime.strptime(start_date, "%Y-%m-%d")
-    date_end_date = dt.datetime.now().date() if ((end_date is None) or (end_date == "")) else dt.datetime.strptime(end_date, "%Y-%m-%d")
+    date_end_date = "2222-02-22" if ((end_date is None) or (end_date == "")) else dt.datetime.strptime(end_date, "%Y-%m-%d")
     datas = []
     attribute = ""
     attribute_time = ""
@@ -48,10 +49,11 @@ def e_chart_line(model, start_date=None, end_date=None):
         attribute = "weight"
         attribute_time = "date"
     elif model == "consume":
-        datas = Consume.query.filter(and_(
-            Consume.time >= date_start_date,
-            Consume.time <= date_end_date
-        )).order_by(Consume.time).all()
+        datas = (db.session.query(func.sum(Consume.amount).label("amount"),
+           cast(Consume.time, Date).label("time")).filter(and_(
+            cast(Consume.time, Date) >= date_start_date,
+            cast(Consume.time, Date) <= date_end_date
+        )).group_by(cast(Consume.time, Date)).order_by(cast(Consume.time, Date)).all())
         attribute = "amount"
         attribute_time = "time"
 
