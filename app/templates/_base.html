@@ -68,19 +68,22 @@
                             <ul class="dropdown-menu">
                                 <li><a href="{{ url_for('management.financial_management') }}"><span class="glyphicon glyphicon-euro"></span> 理财</a></li>
                                 <li class="divider"></li>
+                                <li><a href="{{ url_for('management.house_loan') }}"><span class="glyphicon glyphicon-tower"></span> 房贷计算器</a></li>
+                                <li class="divider"></li>
                                 <li class="dropdown-submenu">
                                     <a tabindex="-1" href="#"><span class="glyphicon glyphicon-th-list"></span> 消费</a>
-                              <ul class="dropdown-menu">
-                                    <li><a href="{{ url_for('management.consumes') }}">消费明细</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="{{ url_for('management.consume_types') }}">消费种类</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="{{ url_for('management.consume_descriptions') }}">消费说明</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="{{ url_for('management.consume_ways') }}">支付方式</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="{{ url_for('management.consume_plates') }}">支付平台</a></li>
-                                </ul></li>
+                                <ul class="dropdown-menu">
+                                        <li><a href="{{ url_for('management.consumes') }}">消费明细</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="{{ url_for('management.consume_types') }}">消费种类</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="{{ url_for('management.consume_descriptions') }}">消费说明</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="{{ url_for('management.consume_ways') }}">支付方式</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="{{ url_for('management.consume_plates') }}">支付平台</a></li>
+                                    </ul>
+                                </li>
                             </ul>
                         </li>
                         <li class="dropdown">
