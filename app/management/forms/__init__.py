@@ -21,6 +21,7 @@ from app.management.forms.work.work_diary import WorkProjectModifyForm
 from app.management.forms.general.collect import CollectModifyForm, WebSiteModifyForm
 from app.management.forms.life.character import WeightModifyForm
 from app.management.forms.work.clock_in import ClockInModifyForm
+from app.management.forms.loan.house_loan import HouseLoanPlanModifyForm
 
 
 
@@ -69,6 +70,8 @@ def modify_form_constructor(items, temp_form):
             modify_form = WeightModifyForm()
         elif temp_form == "ClockInModifyForm":
             modify_form = ClockInModifyForm()
+        elif temp_form == "HouseLoanPlanModifyForm":
+            modify_form = HouseLoanPlanModifyForm()
 
         for current_key in modify_form.__dict__.keys():
             if str(current_key).startswith("_"):
