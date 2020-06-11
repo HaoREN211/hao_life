@@ -6,7 +6,6 @@
 
 from flask import render_template, flash, request, url_for, redirect
 from flask_login import current_user
-from app.management.forms.pattern import DateForm
 from app import db
 from app.management import bp
 from app.management.forms import modify_form_constructor, modify_db, create_db_row
