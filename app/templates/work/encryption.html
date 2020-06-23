@@ -27,6 +27,33 @@
             {% endif %}
         </div>
     </div>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-sm-3">
+            <form method="post" role="form" class="form">
+                {{ decrypt_form.csrf_token }}
+                <div class="row"><div class="col-sm-12"><div class="form-group">
+                    {{ decrypt_form.type_id.label }}
+                    {{ decrypt_form.type_id(class="form-control") }}
+                </div></div></div>
+                <div class="row"><div class="col-sm-12"><div class="form-group">
+                    {{ decrypt_form.decrypt_content.label }}
+                    {{ decrypt_form.decrypt_content(class="form-control") }}
+                </div></div></div>
+                <div class="row"><div class="col-sm-12">
+                    {{ decrypt_form.decrypt_submit }}  {{ decrypt_form.cancel }}
+                </div></div>
+            </form>
+        </div>
+        <div class="col-sm-9">
+            {% if decrypt_result %}
+                <div class="alert alert-success">解密结果为：{{ decrypt_result }}</div>
+            {% endif %}
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block scripts %}

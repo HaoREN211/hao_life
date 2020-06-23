@@ -5,7 +5,7 @@
 
 from app.management import bp
 from flask import render_template, request
-from app.management.forms.work.tools import TimestampForm, EncryptionForm
+from app.management.forms.work.tools import TimestampForm, EncryptionForm, DecryptForm
 from app.management.routes.entertainment.movie import flash_form_errors
 import datetime as dt
 import hashlib
@@ -28,7 +28,9 @@ def timestamp_to_datetime():
 @bp.route('/encryption', methods=['GET', 'POST'])
 def encryption():
     form = EncryptionForm()
+    decrypt_form = DecryptForm()
     result = None
+    decrypt_result = None
 
     if request.method == "POST":
         if form.create_submit.data and form.is_submitted():
@@ -45,4 +47,10 @@ def encryption():
                     result = hl.hexdigest()
                 else:
                     result = str(base64.b64encode(bytes(form.content.data, encoding="utf-8")), "utf-8")
-    return render_template("work/encryption.html", title="加密", form=form, result=result)
+        if decrypt_form.decrypt_submit.data and decrypt_form.is_submitted():
+            if not decrypt_form.validate():
+                flash_form_errors(decrypt_form)
+            else:
+                decrypt_result = str(base64.b64decode(bytes(decrypt_form.decrypt_content.data, encoding="utf-8")), "utf-8")
+    return render_template("work/encryption.html", title="加密", form=form, result=result,
+                           decrypt_result=decrypt_result, decrypt_form=decrypt_form)

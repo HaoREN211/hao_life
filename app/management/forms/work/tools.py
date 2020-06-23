@@ -23,3 +23,12 @@ class EncryptionForm(RenderForm):
     cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
                                           "data-dismiss": "modal",
                                           "type": "button"})
+
+class DecryptForm(RenderForm):
+    type_id = SelectField("解密方式", coerce=int, choices=[(1, "BASE64")], default=1,
+        render_kw={"class": "select-control"})
+    decrypt_content = StringField("解密内容", validators=[DataRequired()])
+    decrypt_submit = SubmitField("解密", render_kw={"class": "btn btn-xs btn-success"})
+    cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
+                                          "data-dismiss": "modal",
+                                          "type": "button"})
