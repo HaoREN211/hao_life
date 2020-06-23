@@ -5,9 +5,10 @@
 
 from app.management import bp
 from flask import render_template, request
-from app.management.forms.work.tools import TimestampForm
+from app.management.forms.work.tools import TimestampForm, EncryptionForm
 from app.management.routes.entertainment.movie import flash_form_errors
 import datetime as dt
+import hashlib
 
 # 时间戳转时间
 @bp.route('/timestamp_to_datetime', methods=['GET', 'POST'])
@@ -21,3 +22,22 @@ def timestamp_to_datetime():
             else:
                 result = dt.datetime.fromtimestamp(int(form.timestamp.data)*1.0/1000.0).strftime("%Y-%m-%d %H:%M:%S")
     return render_template("work/timestamp_to_datetime.html", title="时间戳转时间", result=result, form=form)
+
+# 加密方式
+@bp.route('/encryption', methods=['GET', 'POST'])
+def encryption():
+    form = EncryptionForm()
+    result = None
+
+    if request.method == "POST":
+        if form.create_submit.data and form.is_submitted():
+            if not form.validate():
+                flash_form_errors(form)
+            else:
+                if int(form.type_id.data)==1:
+                    hl = hashlib.md5()
+                else:
+                    hl = hashlib.sha256()
+                hl.update(str(form.content.data).encode(encoding="utf-8"))
+                result = hl.hexdigest()
+    return render_template("work/encryption.html", title="加密", form=form, result=result)

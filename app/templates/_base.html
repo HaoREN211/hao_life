@@ -145,9 +145,12 @@
                                 <li class="divider"></li>
                                 <li class="dropdown-submenu">
                                     <a tabindex="-1" href="#"><span class="glyphicon glyphicon-zoom-in"></span> 工具</a>
-                                <ul class="dropdown-menu">
+                                    <ul class="dropdown-menu">
                                         <li><a href="{{ url_for('management.timestamp_to_datetime') }}">时间戳转时间</a></li>
-                                </ul></li>
+                                        <li class="divider"></li>
+                                        <li><a href="{{ url_for('management.encryption') }}">加密工具</a></li>
+                                    </ul>
+                                </li>
                             </ul>
                         </li>
                         <li class="dropdown">
