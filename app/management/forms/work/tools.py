@@ -16,7 +16,7 @@ class TimestampForm(RenderForm):
                                           "type": "button"})
 
 class EncryptionForm(RenderForm):
-    type_id = SelectField("加密方式", coerce=int, choices=[(1, "MD5"),(2, "SHA256")], default=1,
+    type_id = SelectField("加密方式", coerce=int, choices=[(1, "MD5"),(2, "SHA256"),(3, "BASE64")], default=1,
         render_kw={"class": "select-control"})
     content = StringField("加密内容", validators=[DataRequired()])
     create_submit = SubmitField("加密", render_kw={"class": "btn btn-xs btn-success"})

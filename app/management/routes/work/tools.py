@@ -9,6 +9,7 @@ from app.management.forms.work.tools import TimestampForm, EncryptionForm
 from app.management.routes.entertainment.movie import flash_form_errors
 import datetime as dt
 import hashlib
+import base64
 
 # 时间戳转时间
 @bp.route('/timestamp_to_datetime', methods=['GET', 'POST'])
@@ -36,8 +37,12 @@ def encryption():
             else:
                 if int(form.type_id.data)==1:
                     hl = hashlib.md5()
-                else:
+                    hl.update(str(form.content.data).encode(encoding="utf-8"))
+                    result = hl.hexdigest()
+                elif int(form.type_id.data) == 2:
                     hl = hashlib.sha256()
-                hl.update(str(form.content.data).encode(encoding="utf-8"))
-                result = hl.hexdigest()
+                    hl.update(str(form.content.data).encode(encoding="utf-8"))
+                    result = hl.hexdigest()
+                else:
+                    result = str(base64.b64encode(bytes(form.content.data, encoding="utf-8")), "utf-8")
     return render_template("work/encryption.html", title="加密", form=form, result=result)
