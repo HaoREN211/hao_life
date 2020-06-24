@@ -102,9 +102,9 @@ class ProgrammerCalendar:
         result_activities = []
         for current_activities in tmp_activities:
             tmp_name = current_activities[0]
-            tmp_name.replace("%v", self.data.varNames[self.random(12)%len(self.data.varNames)])
-            tmp_name.replace("%t", self.data.tools[self.random(11)%len(self.data.tools)])
-            tmp_name.replace("%l", str(self.random(12)%247+30))
+            tmp_name = tmp_name.replace("%v", self.data.varNames[self.random(12)%len(self.data.varNames)])
+            tmp_name = tmp_name.replace("%t", self.data.tools[self.random(11)%len(self.data.tools)])
+            tmp_name = tmp_name.replace("%l", str(self.random(12)%247+30))
             result_activities.append({
                 "name": tmp_name,
                 "good": current_activities[1],
