@@ -4,6 +4,23 @@
 # IDE：PyCharm
 
 import re
+from urllib.request import urlopen
+
+
+def save_pic_from_url(url, path):
+    try:
+        img_content = urlopen(url).read()
+    except:
+        print(url + "找不到源文件")
+    else:
+        f = open(path, 'wb+')
+        f.write(img_content)
+        f.close()
+
+
+def get_file_type(file_name):
+    return str(file_name).rsplit('.', 1)[1]
+
 
 def get_standard_name(new_name):
     return str(new_name).strip() if (
