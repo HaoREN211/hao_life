@@ -9,6 +9,36 @@
     {% if current_user.is_authenticated and current_user.is_admin %}
         <input type="button" class="btn-xs btn btn-warning" value="修改"
                onclick=window.location.href="{{ url_for("management.movie_modify", id=movie.id) }}">
+        <input type="button" class="btn btn-xs btn-primary" value="上传图片"
+           data-toggle="modal" data-target="#myModalUpload">
+    <div class="modal fade" id="myModalUpload" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title" id="myModalCvMainAttributeLabel">
+                        {% if create_label %}
+                            {{ update_label }} - {{ item.name }}
+                        {% else %}
+                            上传图片
+                        {% endif %}
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    {% if upload_image_form %}
+                        <form method="POST" enctype="multipart/form-data">
+                            {{ upload_image_form.csrf_token }}
+                            {{ upload_image_form.id }}
+                            {{ upload_image_form.file_select }}
+                            <br />
+                            {{ upload_image_form.file_submit }} {{ upload_image_form.cancel }}
+                        </form>
+                    {% endif %}
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
     {% endif %}
 
     <div class="row">

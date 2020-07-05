@@ -5,7 +5,7 @@
 
 from app import db
 from app.management import bp
-from flask import render_template, request, flash, url_for, redirect
+from flask import render_template, request, flash, url_for, redirect, current_app
 from flask_login import login_required, current_user
 from app.models.movie import Movie, MovieCinema, MovieType
 from app.management.forms.movie import (MovieForm, MovieTypeForm, MovieModifyForm,
@@ -13,6 +13,11 @@ from app.management.forms.movie import (MovieForm, MovieTypeForm, MovieModifyFor
                                         MovieTypeModifyForm, MovieTypeSelectForm, MovieActorSelectForm)
 from sqlalchemy import desc
 from datetime import datetime
+from app.management.forms.general.upload import LinkForm
+from urllib import request as urllib_request
+from app.tools import get_file_type
+from os import makedirs, remove
+from os.path import exists, join, dirname
 
 
 # 电影列表
@@ -202,6 +207,9 @@ def movie(id):
     list_actors = current_movie.actors
     list_actor_id = [int(x.id) for x in list_actors]
 
+    upload_image_form = LinkForm()
+    upload_image_form.id.data = int(id)
+
     if request.method == "POST":
         if current_user.is_authenticated and current_user.is_admin:
             if movie_type_select_form.movie_type_select_submit.data and movie_type_select_form.is_submitted():
@@ -209,6 +217,25 @@ def movie(id):
                     return function_movie_add_type(movie_type_select_form, current_movie)
                 else:
                     flash_form_errors(movie_type_select_form)
+            if upload_image_form.file_submit.data and upload_image_form.validate_on_submit():
+                file_link = upload_image_form.file_select.data
+                if (file_link is not None) and (len(str(file_link).strip()) > 0):
+                    f = urllib_request.urlopen(file_link)
+                    data = f.read()
+                    current_file_type = get_file_type(file_link)
+                    file_name = 'static/images/movies/' + str(upload_image_form.id.data) + "." + current_file_type
+                    file_path = join(current_app.root_path, file_name)
+                    folder_path = dirname(file_path)
+                    if not exists(folder_path):
+                        makedirs(folder_path)
+                    if exists(file_path):
+                        remove(file_path)
+                    with open(file_path, "wb") as code:
+                        code.write(data)
+                    current_movie = Movie.query.get(int(upload_image_form.id.data))
+                    current_movie.bill_link = "/" + file_name
+                    flash("电影海报上传成功")
+                return redirect(url_for("management.movie", id=id))
         if movie_actor_select_form.movie_actor_select_submit.data and movie_actor_select_form.is_submitted():
             if movie_actor_select_form.validate():
                 return function_movie_add_actor(movie_actor_select_form, current_movie)
@@ -223,6 +250,7 @@ def movie(id):
 
     return render_template("movie/movie.html", movie=current_movie,
                            movie_type_select_form=movie_type_select_form,
+                           upload_image_form=upload_image_form,
                            movie_actor_select_form=movie_actor_select_form)
 
 

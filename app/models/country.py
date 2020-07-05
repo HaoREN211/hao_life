@@ -21,6 +21,15 @@ class Country(db.Model):
     persons = db.relationship("Person", backref="nationality", lazy='dynamic')
 
     @hybrid_property
+    def province_cnt(self):
+        return len(self.provinces)
+
+    @province_cnt.expression
+    def province_cnt(cls):
+        return (select([func.count(Province.id)])
+                .where(Province.country_id == cls.id))
+
+    @hybrid_property
     def movie_cnt(self):
         return self.movies.count()
 
@@ -35,6 +44,15 @@ class Province(db.Model):
     name = db.Column(db.String(100), unique=True, nullable=False, comment="省份名称")
 
     country = db.relationship("Country", backref="provinces", foreign_keys=[country_id])
+
+    @hybrid_property
+    def city_cnt(self):
+        return len(self.cities)
+
+    @city_cnt.expression
+    def city_cnt(cls):
+        return (select([func.count(City.id)])
+                .where(City.province_id == cls.id))
 
 
     # 更新省份的国家id
@@ -91,6 +109,17 @@ class District(db.Model):
     city = db.relationship("City", backref="districts", foreign_keys=[city_id])
     province = db.relationship("Province", backref="districts", foreign_keys=[province_id])
     country = db.relationship("Country", backref="districts", foreign_keys=[country_id])
+
+    @hybrid_property
+    def estate_cnt(self):
+        return len(self.estates)
+
+    @hybrid_property
+    def building_cnt(self):
+        list_building_cnt_of_estate = [x.building_cnt for x in self.estates]
+        if list_building_cnt_of_estate:
+            return sum(list_building_cnt_of_estate)
+        return 0
 
     # 更新区域的名称
     def update_name(self, new_name):

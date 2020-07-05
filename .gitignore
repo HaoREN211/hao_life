@@ -3,3 +3,4 @@
 config_db.py
 logs/*
 migrations/*
+app/static/images/*

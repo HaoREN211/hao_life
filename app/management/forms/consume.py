@@ -14,11 +14,11 @@ class ConsumeCreateForm(RenderForm):
                        render_kw={"type":"datetime-local"})
     amount = StringField("消费金额", render_kw={"type":"number", "start":"0.00", "step":"0.01"})
 
-    plate_id = SelectField("消费平台", coerce=int, choices=[(0, " ")])
-    type_id = SelectField("消费种类", coerce=int, choices=[(0, " ")])
-    way_id = SelectField("消费方式", coerce=int, choices=[(0, " ")])
-    shop_id = SelectField("消费商家", coerce=int, choices=[(0, " ")])
-    description_id = SelectField("消费说明", coerce=int, choices=[(0, " ")])
+    plate_id = SelectField("消费平台", coerce=int, choices=[(0, " ")], render_kw={"class": "select-control"})
+    type_id = SelectField("消费种类", coerce=int, choices=[(0, " ")], render_kw={"class": "select-control"})
+    way_id = SelectField("消费方式", coerce=int, choices=[(0, " ")], render_kw={"class": "select-control"})
+    shop_id = SelectField("消费商家", coerce=int, choices=[(0, " ")], render_kw={"class": "select-control"})
+    description_id = SelectField("消费说明", coerce=int, choices=[(0, " ")], render_kw={"class": "select-control"})
 
     consume_create_submit = SubmitField("添加", render_kw={"class":"btn btn-xs btn-success"})
     cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
@@ -41,11 +41,11 @@ class ConsumeModifyForm(RenderForm):
                        render_kw={"type":"datetime-local"})
     amount = StringField("消费金额", render_kw={"type":"number", "start":"0.00", "step":"0.01"})
 
-    plate_id = SelectField("消费平台", coerce=int, choices=[(0, " ")])
-    type_id = SelectField("消费种类", coerce=int, choices=[(0, " ")])
-    way_id = SelectField("消费方式", coerce=int, choices=[(0, " ")])
-    shop_id = SelectField("消费商家", coerce=int, choices=[(0, " ")])
-    description_id = SelectField("消费说明", coerce=int, choices=[(0, " ")])
+    plate_id = SelectField("消费平台", coerce=int, choices=[(0, " ")], render_kw={"class": "select-control"})
+    type_id = SelectField("消费种类", coerce=int, choices=[(0, " ")], render_kw={"class": "select-control"})
+    way_id = SelectField("消费方式", coerce=int, choices=[(0, " ")], render_kw={"class": "select-control"})
+    shop_id = SelectField("消费商家", coerce=int, choices=[(0, " ")], render_kw={"class": "select-control"})
+    description_id = SelectField("消费说明", coerce=int, choices=[(0, " ")], render_kw={"class": "select-control"})
 
     consume_modify_submit = SubmitField("修改", render_kw={"class":"btn btn-xs btn-success"})
     cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",

@@ -8,16 +8,26 @@ from app.main import bp
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, current_user, logout_user
 from config import PageConfig
-from app.management.routes.financial_management import echarts_financial_management
+from app.management.routes.work.salary import e_chart_salary, pie_chart_salary
 from app.models.user import User
 from app.main.forms.user import UserForm, LoginForm
 from werkzeug.urls import url_parse
+from app.management.routes.life.character import e_chart_weight, e_chart_calendar_weight
+from app.management.routes.work.clock_in import e_chart_calendar_clock_in, e_chart_line_clock_in
+from app.management.routes.consume.consume import e_chart_pie_consume_by_type, e_chart_line_consume, e_chart_pie_consume_by_way
+
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
 def index():
-    echarts_data = echarts_financial_management()
-    return render_template("index.html", title=PageConfig.TITLE, echarts_financial_management=echarts_data)
+    return render_template("index.html", title=PageConfig.TITLE,
+                           e_chart_salary= e_chart_salary(), pie_chart_salary=pie_chart_salary(),
+                           e_chart_weight=e_chart_weight(), e_chart_calendar_weight=e_chart_calendar_weight(),
+                           e_chart_calendar_clock_in=e_chart_calendar_clock_in(),
+                           e_chart_pie_consume_by_type=e_chart_pie_consume_by_type(),
+                           e_chart_pie_consume_by_way=e_chart_pie_consume_by_way(),
+                           e_chart_line_consume = e_chart_line_consume(),
+                           e_chart_line_clock_in = e_chart_line_clock_in())
 
 
 @bp.route('/register', methods=['GET', 'POST'])

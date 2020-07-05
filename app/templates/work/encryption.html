@@ -1,0 +1,76 @@
+{% extends '_base.html' %}
+
+{% block app_content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/select2.min.css') }}" />
+
+
+    <div class="row">
+        <div class="col-sm-3">
+            <form method="post" role="form" class="form">
+                {{ form.csrf_token }}
+                <div class="row"><div class="col-sm-12"><div class="form-group">
+                    {{ form.type_id.label }}
+                    {{ form.type_id(class="form-control") }}
+                </div></div></div>
+                <div class="row"><div class="col-sm-12"><div class="form-group">
+                    {{ form.content.label }}
+                    {{ form.content(class="form-control") }}
+                </div></div></div>
+                <div class="row"><div class="col-sm-12">
+                    {{ form.create_submit }}  {{ form.cancel }}
+                </div></div>
+            </form>
+        </div>
+        <div class="col-sm-9">
+            {% if result %}
+                <div class="alert alert-success">加密结果为：{{ result }}</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-sm-3">
+            <form method="post" role="form" class="form">
+                {{ decrypt_form.csrf_token }}
+                <div class="row"><div class="col-sm-12"><div class="form-group">
+                    {{ decrypt_form.type_id.label }}
+                    {{ decrypt_form.type_id(class="form-control") }}
+                </div></div></div>
+                <div class="row"><div class="col-sm-12"><div class="form-group">
+                    {{ decrypt_form.decrypt_content.label }}
+                    {{ decrypt_form.decrypt_content(class="form-control") }}
+                </div></div></div>
+                <div class="row"><div class="col-sm-12">
+                    {{ decrypt_form.decrypt_submit }}  {{ decrypt_form.cancel }}
+                </div></div>
+            </form>
+        </div>
+        <div class="col-sm-9">
+            {% if decrypt_result %}
+                <div class="alert alert-success">解密结果为：{{ decrypt_result }}</div>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='js/select2.4.0.0.min.js') }}"></script>
+
+    <script type="application/javascript">
+        $(document).ready(function() {
+            $('.select-control').select2();
+
+            var list_object = document.getElementsByClassName("select2-container");
+            for (var i =0; i<list_object.length; i++) {
+                list_object[i].style.width = "100%";
+            }
+
+            {# https://blog.csdn.net/john1337/article/details/53315969 #}
+            $.fn.modal.Constructor.prototype.enforceFocus = function () { }
+        });
+    </script>
+{% endblock %}

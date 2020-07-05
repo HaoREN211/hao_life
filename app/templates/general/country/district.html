@@ -11,7 +11,7 @@
 
     <table class="table table-hover">
         <thead>
-        <tr><th>区域</th><th>城市</th><th>省份</th><th>国家</th>
+        <tr><th>区域</th><th>城市</th><th>省份</th><th>国家</th><th>房源数量</th>
             {% if current_user.is_authenticated and current_user.is_admin %}
                 <th>管理</th>
             {% endif %}
@@ -23,6 +23,7 @@
                 <td>{% if item.city %}{{ item.city.name }}{% endif %}</td>
                 <td>{% if item.province %}{{ item.province.name }}{% endif %}</td>
                 <td>{% if item.country %}{{ item.country.name }}{% endif %}</td>
+                <td>{{ item.building_cnt }}</td>
                 {% if current_user.is_authenticated and current_user.is_admin %}
                     <td>
                         {% include 'general/wtf_quick_form_modify.html' %}

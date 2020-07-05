@@ -11,6 +11,54 @@ from flask_login import current_user, login_required
 import datetime
 from math import floor
 from sqlalchemy.sql import func
+from app.management.forms.financial_management import HouseLoanCommercialLoanForm, HouseLoanFundLoanForm, HouseLoanMergeLoanForm
+from app.management.routes.entertainment.movie import flash_form_errors
+from app.tools import get_loan_repay_info_dengebenxi, merge_commercial_and_fund_loan_repay_details
+
+
+
+@bp.route('/house_loan', methods=['GET', 'POST'])
+def house_loan():
+    commercial_loan = HouseLoanCommercialLoanForm()
+    fund_loan = HouseLoanFundLoanForm()
+    merge_loan = HouseLoanMergeLoanForm()
+
+    loan_type = ["", "hidden", "hidden"]
+    pay_details = {}
+
+    if request.method == "POST":
+        # 等额本息纯商贷部分
+        if commercial_loan.commercial_loan_submit.data and commercial_loan.is_submitted():
+            if not commercial_loan.validate():
+                flash_form_errors(commercial_loan)
+            else:
+                pay_details = get_loan_repay_info_dengebenxi(commercial_loan.amount.data, commercial_loan.tax.data,
+                    commercial_loan.duration.data)
+        # 等额本息公积金贷款部分
+        if fund_loan.fund_loan_submit.data and fund_loan.is_submitted():
+            if not fund_loan.validate():
+                flash_form_errors(fund_loan)
+            else:
+                loan_type = ["hidden", "", "hidden"]
+                tax = "3.25" if int(fund_loan.tax.data) == 1 else "3.575"
+                pay_details = get_loan_repay_info_dengebenxi(fund_loan.amount.data, tax,
+                                                             fund_loan.duration.data)
+        if merge_loan.merge_loan_submit.data and merge_loan.is_submitted():
+            if not merge_loan.validate():
+                flash_form_errors(merge_loan)
+            else:
+                loan_type = ["hidden", "hidden", ""]
+                fund_tax = "3.25" if int(merge_loan.fund_tax.data) == 1 else "3.575"
+                commercial_pay_details = get_loan_repay_info_dengebenxi(merge_loan.commercial_amount.data,
+                                                                  merge_loan.commercial_tax.data,
+                                                                  merge_loan.duration.data)
+                fund_pay_details = get_loan_repay_info_dengebenxi(merge_loan.fund_amount.data, fund_tax,
+                                                                  merge_loan.duration.data)
+                pay_details = merge_commercial_and_fund_loan_repay_details(fund_pay_details, commercial_pay_details)
+
+    return render_template('financial_management/house_loan.html', commercial_loan=commercial_loan,
+                           pay_details=pay_details, fund_loan=fund_loan, loan_type=loan_type,
+                           merge_loan=merge_loan)
 
 
 @bp.route('/financial_management', methods=['GET', 'POST'])

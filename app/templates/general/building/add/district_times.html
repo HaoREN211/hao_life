@@ -1,0 +1,87 @@
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% if current_user.is_authenticated and current_user.is_admin %}
+    <input type="button" class="btn btn-xs btn-success" value="添加"
+            data-toggle="modal" data-target="#myModalCreate">
+    <div class="modal fade" id="myModalCreate" tabindex="-1" role="dialog" aria-labelledby="myModalCvMainAttributeLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title" id="myModalCvMainAttributeLabel">
+                        {% if create_label %}
+                            {{ create_label }}
+                        {% else %}
+                            添加楼盘信息
+                        {% endif %}
+                    </h4>
+                </div>
+
+                <div class="modal-body">
+                    {% if add_form %}
+                        <form method="post" role="form" class="form">
+                            {{ add_form.csrf_token }}
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                    {{ add_form.name.label }}
+                                        {{ add_form.name(class="form-control") }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        {{ add_form.estate_id.label }}
+                                        {{ add_form.estate_id(class="form-control") }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        {{ add_form.times.label }}
+                                        {{ add_form.times(class="form-control") }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        {{ add_form.start_register_time.label }}
+                                        {{ add_form.start_register_time(class="form-control") }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        {{ add_form.end_register_time.label }}
+                                        {{ add_form.end_register_time(class="form-control") }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        {{ add_form.lotto_date.label }}
+                                        {{ add_form.lotto_date(class="form-control") }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        {{ add_form.pick_date.label }}
+                                        {{ add_form.pick_date(class="form-control") }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    {{ add_form.create_submit }}
+                                    {{ add_form.cancel }}
+                                </div>
+                            </div>
+                        </form>
+                    {% endif %}
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{% endif %}

@@ -3,15 +3,21 @@
 # 时间：2020/1/6 17:24
 # IDE：PyCharm
 
-from app import db
-from flask import request, url_for, render_template, flash, redirect
 from datetime import datetime
+from flask import current_app
+from flask import request, url_for, render_template, flash, redirect
 from flask_login import current_user
+from urllib import request as urllib_request
+from os.path import join, exists, dirname
+from os import remove, makedirs
+from app import db
 from app.management import bp
-from app.models.person import Person
-from app.management.routes.movie import flash_form_errors
 from app.management.forms.movie import MovieDeleteForm
 from app.management.forms.person import PersonCreateForm, PersonModifyForm
+from app.management.routes.entertainment.movie import flash_form_errors
+from app.models.person import Person
+from app.management.forms.general.upload import LinkForm
+from app.tools import get_file_type
 
 
 @bp.route('/persons', methods=['GET', 'POST'])
@@ -20,6 +26,7 @@ def persons():
     m_form = PersonModifyForm()
     delete_form = MovieDeleteForm()
     modify_error_form = None
+    temp_upload_form = LinkForm()
 
     if request.method == "POST":
         if current_user.is_authenticated and current_user.is_admin:
@@ -37,7 +44,35 @@ def persons():
                     modify_error_form = m_form
                     flash_form_errors(modify_error_form)
             if delete_form.delete_submit.data and delete_form.validate_on_submit():
-                return remove_person(delete_form)
+                current_person = Person.query.get(int(delete_form.id.data))
+                current_link = current_person.bill_link
+                if (current_link is not None) and (len(str(current_link).strip())>0):
+                    current_link = current_link[1:len(current_link)]
+                    current_path = join(current_app.root_path, current_link)
+                    if exists(current_path):
+                        remove(current_path)
+                remove_info = remove_person(delete_form)
+
+                return remove_info
+            if temp_upload_form.file_submit.data and temp_upload_form.validate_on_submit():
+                file_link = temp_upload_form.file_select.data
+                if (file_link is not None) and (len(str(file_link).strip())>0):
+                    f = urllib_request.urlopen(file_link)
+                    data = f.read()
+                    current_file_type = get_file_type(file_link)
+                    file_name = 'static/images/persons/'+str(temp_upload_form.id.data)+"."+current_file_type
+                    file_path = join(current_app.root_path, file_name)
+                    folder_path = dirname(file_path)
+                    if not exists(folder_path):
+                        makedirs(folder_path)
+                    if exists(file_path):
+                        remove(file_path)
+                    with open(file_path, "wb") as code:
+                        code.write(data)
+                    current_person = Person.query.get(int(temp_upload_form.id.data))
+                    current_person.bill_link = "/"+file_name
+                    flash("头像上传成功")
+                return redirect(url_for("management.persons"))
         else:
             flash("您不是超级管理员，无法进行电影院数据的管理")
             return redirect(url_for("management.cinemas"))
@@ -52,6 +87,12 @@ def persons():
     if modify_error_form is not None:
         modify_form[int(modify_error_form.id.data)] = modify_error_form
 
+    upload_image_form = {}
+    for current_item in persons.items:
+        temp_form = LinkForm()
+        temp_form.id.data = current_item.id
+        upload_image_form[current_item.id] = temp_form
+
     next_url = url_for('management.persons', page=persons.next_num) if persons.has_next else None
     prev_url = url_for('management.persons', page=persons.prev_num) if persons.has_prev else None
     return render_template("general/persons.html", items=persons.items, next_url=next_url, prev_url=prev_url,
@@ -59,6 +100,8 @@ def persons():
                            modify_form=modify_form,
                            delete_form=delete_form,
                            create_label="添加人物",
+                           update_label="上传人物头像",
+                           upload_image_form=upload_image_form,
                            modify_label="修改人物信息",
                            delete_label="您確认要删除该人物吗？")
 

@@ -1,0 +1,76 @@
+{% extends '_base.html' %}
+
+{% block app_content %}
+    <div class="row">
+        <h3>{{ target_date.year }}年{{ target_date.month }}月{{ target_date.day }}日</h3>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="row">
+                <div class="col-sm-12">
+                    <strong>座位朝向：</strong>面向<span class="text-danger">{{ direction }}</span>写程序，BUG 最少。
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <strong>今日宜饮：</strong><span class="text-danger">{{ drinks }}</span>。
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <strong>女神亲近指数：</strong>
+                    {% for current_star in star %}
+                        {% if current_star==1 %}
+                            <span class="glyphicon glyphicon-star"></span>
+                        {% else %}
+                            <span class="glyphicon glyphicon-star-empty"></span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="row">
+                <div class="col-sm-12">
+                    <strong><font size="4">查询日期：</font></strong>
+                    <input type="date" id="pick_date" onchange="change_date()"  class="form-control">
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="alert alert-success">
+                <h3 class="text-center">益</h3>
+                {% for foo in lucks.good %}
+                    <p><strong>{{ foo.name }}</strong></p>
+                    {% if foo.description %}
+                        <p><font size="2" color="#a9a9a9">{{ foo.description }}</font></p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="alert alert-danger">
+                <h3 class="text-center">忌</h3>
+                {% for foo in lucks.bad %}
+                    <p><strong>{{ foo.name }}</strong></p>
+                    {% if foo.description %}
+                        <p><font size="2" color="#a9a9a9">{{ foo.description }}</font></p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="application/javascript">
+        function change_date() {
+            window.location.href = "{{ url_for('management.programmer_calendar') }}"+"?date="+document.getElementById("pick_date").value
+        }
+    </script>
+{% endblock %}

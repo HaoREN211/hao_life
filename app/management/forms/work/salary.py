@@ -10,7 +10,7 @@ from app.models.salary import Salary, WorkExperience
 
 
 class SalaryCreateForm(RenderForm):
-    date = DateField("领工资时间", validators=[DataRequired()], render_kw={"type": "date"})
+    date = StringField("领工资时间", validators=[DataRequired()], render_kw={"type": "date"})
     work_experience_id = SelectField("工作经历", coerce=int, choices=[(0, " ")], default=0,
                                      render_kw={"class": "select-control"})
     basic_salary = DecimalField("基本工资", validators=[DataRequired()],
@@ -61,7 +61,7 @@ class SalaryCreateForm(RenderForm):
 
 class SalaryModifyForm(RenderForm):
     id = HiddenField("主键")
-    date = DateField("领工资时间", validators=[DataRequired()], render_kw={"type": "date"})
+    date = StringField("领工资时间", validators=[DataRequired()], render_kw={"type": "date"})
     work_experience_id = SelectField("工作经历", coerce=int, choices=[(0, " ")], default=0,
                                      render_kw={"class": "select-control"})
     basic_salary = DecimalField("基本工资", validators=[DataRequired()],
