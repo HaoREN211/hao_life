@@ -3,16 +3,19 @@
 # 时间：2020/1/8 15:27
 # IDE：PyCharm
 
+from urllib.request import urlopen
+
+
 def get_standard_name(new_name):
     return str(new_name).strip() if (
-        (new_name is not None) and len(str(new_name).strip()) > 0) else None
+            (new_name is not None) and len(str(new_name).strip()) > 0) else None
 
 
 # 从datetime中重建构造datetime_local所需要的的格式
 def reform_datetime_local_with_datetime(datetime):
     result = str(datetime.year)
-    result += "-"+add_zero_for_month_day_hour_minute(datetime.month)
-    result  += "-"+add_zero_for_month_day_hour_minute(datetime.day)
+    result += "-" + add_zero_for_month_day_hour_minute(datetime.month)
+    result += "-" + add_zero_for_month_day_hour_minute(datetime.day)
     result += "T" + add_zero_for_month_day_hour_minute(datetime.hour)
     result += ":" + add_zero_for_month_day_hour_minute(datetime.minute)
     return result
@@ -21,5 +24,17 @@ def reform_datetime_local_with_datetime(datetime):
 # 如果月日时分秒只有一位数字，则给它前面加一个0
 def add_zero_for_month_day_hour_minute(time_unit):
     if len(str(time_unit)) == 1:
-        time_unit = "0"+str(time_unit)
+        time_unit = "0" + str(time_unit)
     return str(time_unit)
+
+
+# 从url链接中读取图片并保存到本地path目录下
+def save_pic_from_url(url, path):
+    try:
+        img_content = urlopen(url).read()
+    except:
+        print(url + "找不到源文件")
+    else:
+        f = open(path, 'wb+')
+        f.write(img_content)
+        f.close()
