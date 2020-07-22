@@ -13,5 +13,5 @@ from app.management.routes.life import estate, marathon, train, metro, calendar
 from app.management.routes.consume import consume, consume_way, consume_type, consume_plate, consume_description,house_loan
 from app.management.routes.general import constellation, person, shop, enterprise, collect
 from app.management.routes.location import province, country, city, dristrict
-from app.management.routes.work import salary, work_diaries, work_project, clock_in, tools
+from app.management.routes.work import salary, work_diaries, work_project, clock_in, tools, work_project_type
 from app.management.routes.life.character import weights

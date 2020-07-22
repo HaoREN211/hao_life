@@ -29,14 +29,32 @@ class WorkDiary(db.Model):
         return (select([func.count(WorkDiaryDetail.id)])
                 .where(WorkDiaryDetail.work_diary_id == cls.id))
 
+class WorkProjectType(db.Model):
+    id = db.Column(BIGINT(unsigned=True), primary_key=True, comment="日记项目类型主键", autoincrement=True)
+    name = db.Column(db.String(50), nullable=False, unique=True, comment="项目类型名称")
+
+    create_time = db.Column(db.DateTime, default=datetime.now(), nullable=False, comment="创建时间")
+    update_time = db.Column(db.DateTime, default=datetime.now(), nullable=False, comment="最后一次修改时间")
+
+    @hybrid_property
+    def projects_cnt(self):
+        return len(self.projects)
+
+    @projects_cnt.expression
+    def projects_cnt(cls):
+        return (select([func.count(WorkProject.id)])
+                .where(WorkProject.project_type_id == cls.id))
+
 class WorkProject(db.Model):
     id = db.Column(BIGINT(unsigned=True), primary_key=True, comment="日记项目主键", autoincrement=True)
+    project_type_id = db.Column(BIGINT(unsigned=True), db.ForeignKey("work_project_type.id"), nullable=True, comment="项目分类")
     name = db.Column(db.String(50), nullable=False, comment="项目名称")
     start_date = db.Column(db.Date, nullable=True, comment="项目开始时间")
     end_date = db.Column(db.Date, nullable=True, comment="项目结束时间")
 
     create_time = db.Column(db.DateTime, default=datetime.now(), nullable=False, comment="创建时间")
     update_time = db.Column(db.DateTime, default=datetime.now(), nullable=False, comment="最后一次修改时间")
+    project_type = db.relationship("WorkProjectType", backref="projects", foreign_keys=[project_type_id])
 
     @hybrid_property
     def details_cnt(self):

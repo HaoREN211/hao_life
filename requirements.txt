@@ -10,3 +10,5 @@ Flask==1.1.1
 Flask_Bootstrap==3.3.7.1
 python-dotenv==0.10.3
 pymysql==0.9.3
+werkzeug==0.16.1
+flask-wtf==0.14.3

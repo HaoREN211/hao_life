@@ -5,13 +5,31 @@
 
 from app.management.forms.movie import RenderForm
 from wtforms import StringField, SubmitField, SelectField, HiddenField, TextAreaField
-from app.models.diary import WorkProject, WorkDiaryDetail
+from app.models.diary import WorkProject, WorkDiaryDetail, WorkProjectType
 from operator import and_
 from wtforms.validators import ValidationError, DataRequired, Length
 
+class WorkProjectTypeCreateForm(RenderForm):
+    name = StringField("项目类型名称", validators=[DataRequired(), Length(max=50)])
+
+    create_submit = SubmitField("添加", render_kw={"class":"btn btn-xs btn-success"})
+    cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
+                                          "data-dismiss": "modal",
+                                          "type": "button"})
+
+class WorkProjectTypeModifyForm(RenderForm):
+    id = HiddenField("项目类型主键")
+    name = StringField("项目类型名称", validators=[DataRequired(), Length(max=50)], default="  ")
+
+    modify_submit = SubmitField("修改", render_kw={"class":"btn btn-xs btn-success"})
+    cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
+                                          "data-dismiss": "modal",
+                                          "type": "button"})
 
 class WorkProjectCreateForm(RenderForm):
     name = StringField("项目名称", validators=[DataRequired(), Length(max=50)])
+    project_type_id = SelectField("项目类型", coerce=int, choices=[(0, " ")], default=0,
+                                  render_kw={"class": "select-control"})
     start_date = StringField("开始日期", validators=[DataRequired()], render_kw={"type":"date"})
     end_date = StringField("结束日期", validators=[DataRequired()], render_kw={"type":"date"})
 
@@ -19,10 +37,15 @@ class WorkProjectCreateForm(RenderForm):
     cancel = SubmitField("取消", render_kw={"class": "btn btn-xs btn-warning",
                                           "data-dismiss": "modal",
                                           "type": "button"})
+    def __init__(self, *args, **kwargs):
+        super(WorkProjectCreateForm, self).__init__(*args, **kwargs)
+        self.project_type_id.choices.extend([(x.id, x.name) for x in WorkProjectType.query.all()])
 
 class WorkProjectModifyForm(RenderForm):
     id = HiddenField("项目主键")
     name = StringField("项目名称", validators=[DataRequired(), Length(max=50)], default="  ")
+    project_type_id = SelectField("项目类型", coerce=int, choices=[(0, " ")], default=0,
+                                  render_kw={"class": "select-control"})
     start_date = StringField("开始日期", validators=[DataRequired()], render_kw={"type":"date"})
     end_date = StringField("结束日期", validators=[DataRequired()], render_kw={"type":"date"})
 
@@ -31,7 +54,9 @@ class WorkProjectModifyForm(RenderForm):
                                           "data-dismiss": "modal",
                                           "type": "button"})
 
-
+    def __init__(self, *args, **kwargs):
+        super(WorkProjectModifyForm, self).__init__(*args, **kwargs)
+        self.project_type_id.choices.extend([(x.id, x.name) for x in WorkProjectType.query.all()])
 
 class WorkDiaryDetailModifyForm(RenderForm):
     id = HiddenField("主键")

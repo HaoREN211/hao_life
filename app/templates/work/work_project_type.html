@@ -1,0 +1,33 @@
+{% extends '_base.html' %}
+
+{% block app_content %}
+    {% if current_user.is_authenticated and current_user.is_admin %}
+        {% include 'general/wtf_quick_form_create.html' %}
+    {% endif %}
+
+    <button type="button" class="btn btn-danger btn-xs"
+            onclick=window.location.href="{{ url_for("management.work_projects") }}">返回项目列表</button>
+
+    <table class="table table-hover">
+        <thead>
+        <tr><th>项目类型</th>
+            <th>关联项目数量</th>
+            {% if current_user.is_authenticated and current_user.is_admin %}
+                <th>管理</th>
+            {% endif %}
+        </tr>
+        </thead>
+        {% for item in items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.projects_cnt }}</td>
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                    <td>
+                        {% include 'general/wtf_quick_form_modify.html' %}
+                        {% include 'general/wtf_quick_form_delete.html' %}
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

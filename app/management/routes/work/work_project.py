@@ -14,7 +14,7 @@ from app.management.routes.entertainment.movie import flash_form_errors
 from app.management.forms.work.work_diary import WorkProjectCreateForm, WorkProjectModifyForm
 
 
-# 户型列表
+# 工作项目
 @bp.route('/work_projects', methods=['GET', 'POST'])
 def work_projects():
     page = request.args.get('page', 1, type=int)
