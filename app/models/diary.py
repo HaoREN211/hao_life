@@ -79,3 +79,10 @@ class WorkDiaryDetail(db.Model):
 
     create_time = db.Column(db.DateTime, default=datetime.now(), nullable=False, comment="创建时间")
     update_time = db.Column(db.DateTime, default=datetime.now(), nullable=False, comment="最后一次修改时间")
+
+    # 根据项目关联的最新和最老的日记创建时间更新项目的结束和开始的日期
+    def update_project_time(self):
+        project_details_times = [x.create_time.date() for x in self.work_project.details]
+        self.work_project.start_date = min(project_details_times)
+        self.work_project.end_date = max(project_details_times)
+

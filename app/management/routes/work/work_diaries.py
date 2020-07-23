@@ -14,7 +14,6 @@ from sqlalchemy import func
 from app.management.forms.work.work_diary import WorkDiaryDetailCreateForm, WorkDiaryDetailModifyForm, WorkDiaryDetailDeleteForm
 from app.management.routes.entertainment.movie import flash_form_errors
 from app.management.forms import modify_form_constructor
-import datetime as dt
 
 
 # 日记列表
@@ -47,6 +46,8 @@ def work_diary(id):
                     create_time = dt.datetime.now(),
                     update_time = dt.datetime.now()
                 ))
+                last_detail = WorkDiaryDetail.query.order_by(WorkDiaryDetail.id.desc()).first()
+                last_detail.update_project_time()
                 return redirect(url_for("management.work_diary", id=id))
 
         # 修改日记要求
