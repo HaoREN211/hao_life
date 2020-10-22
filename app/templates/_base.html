@@ -51,7 +51,7 @@
     {% endblock %}
 
     {% block navbar %}
-        <div class="navbar navbar-inverse" role="navigation">
+        <div class="navbar navbar-inverse" role="navigation" style="border-radius: 0">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <a class="navbar-brand" href="#">数据管理</a>
@@ -117,6 +117,8 @@
                                 <li><a href="{{ url_for('management.weights') }}"><span class="glyphicon glyphicon-fire"></span> 体重</a></li>
                                 <li class="divider"></li>
                                 <li><a href="{{ url_for('management.programmer_calendar') }}"><span class="glyphicon glyphicon-calendar"></span> 程序员老黄历</a></li>
+                                <li class="divider"></li>
+                                 <li><a href="{{ url_for('management.accounts') }}"><span class="glyphicon glyphicon-user"></span> 账号</a></li>
                                 <li class="divider"></li>
                                 <li class="dropdown-submenu">
                                     <a tabindex="-1" href="#"><span class="glyphicon glyphicon-road"></span> 出行</a>

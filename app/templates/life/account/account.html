@@ -1,0 +1,33 @@
+{% extends '_base.html' %}
+
+{% block app_content %}
+    {% if current_user.is_authenticated and current_user.is_admin %}
+        {% include 'general/wtf_quick_form_create.html' %}
+    {% endif %}
+
+    {# 账户列表 #}
+    <table class="table table-hover">
+        {# 表头 #}
+        <thead>
+            <tr><th>名称</th><th>账户名</th>
+            </tr>
+        </thead>
+
+        {% for item in items %}
+            <tr data-target="#myModalShow{{ item.id }}" data-toggle="modal">
+                <td>{{ item.name }}</td>
+                <td>{{ item.account }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    {# 点击某一账户的时候，会弹出关于此账户的详细信息 #}
+    {% for item in items %}
+        {% include "life/account/account_show.html" %}
+    {% endfor %}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for("static", filename='js/copy_clipboard.js') }}"></script>
+{% endblock %}

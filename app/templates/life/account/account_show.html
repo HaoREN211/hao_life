@@ -1,0 +1,63 @@
+<div class="modal fade" id="myModalShow{{ item.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="myModalCvMainAttributeLabel">
+                    {{ item.name }}
+                </h4>
+            </div>
+
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead><tr><th>类型</th><th>内容</th><th>复制内容</th></tr></thead>
+                    <tr>
+                        <td>账号：</td>
+                        <td>{{ item.account }}</td>
+                        <td><span class="glyphicon glyphicon-floppy-disk" style="cursor: pointer"
+                            onclick="copy_content('account_{{ item.id }}')"></span></td>
+                    </tr>
+
+                    <tr>
+                        <td>密码：</td>
+                        <td>{% if item.password %}****{% endif %}</td>
+                        <td>{% if item.password %}
+                            <span class="glyphicon glyphicon-floppy-disk" style="cursor: pointer"
+                                  onclick="copy_content('password_{{ item.id }}')"></span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>链接：</td>
+                        <td>{% if item.url %}{{ item.url }}{% endif %}</td>
+                        <td>{% if item.url %}
+                            <span class="glyphicon glyphicon-floppy-disk" style="cursor: pointer"
+                                  onclick="copy_content('url_{{ item.id }}')"></span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>注释：</td>
+                        <td>{% if item.comment %}{{ item.comment }}{% endif %}</td>
+                        <td>{% if item.comment %}
+                            <span class="glyphicon glyphicon-floppy-disk" style="cursor: pointer"
+                                  onclick="copy_content('comment_{{ item.id }}')"></span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                    {% include 'general/wtf_quick_form_modify.html' %}
+                    {% include 'general/wtf_quick_form_delete.html' %}
+                    <input type="hidden" value="{{ item.account }}" id="account_{{ item.id }}">
+                    <input type="hidden" value="{{ item.password }}" id="password_{{ item.id }}">
+                    <input type="hidden" value="{{ item.url }}" id="url_{{ item.id }}">
+                    <input type="hidden" value="{{ item.comment }}" id="comment_{{ item.id }}">
+                {% endif %}
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

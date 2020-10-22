@@ -22,6 +22,7 @@ from app.management.forms.general.collect import CollectModifyForm, WebSiteModif
 from app.management.forms.life.character import WeightModifyForm
 from app.management.forms.work.clock_in import ClockInModifyForm
 from app.management.forms.loan.house_loan import HouseLoanPlanModifyForm
+from app.management.forms.life.account import AccountModifyForm
 
 
 # 重新构造修改的表单
@@ -73,6 +74,8 @@ def modify_form_constructor(items, temp_form):
             modify_form = HouseLoanPlanModifyForm()
         elif temp_form == "WorkProjectTypeModifyForm":
             modify_form = WorkProjectTypeModifyForm()
+        elif temp_form == "AccountModifyForm":
+            modify_form = AccountModifyForm()
 
         for current_key in modify_form.__dict__.keys():
             if str(current_key).startswith("_"):
