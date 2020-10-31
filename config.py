@@ -6,7 +6,7 @@
 import os
 from config_db import ConfigDb
 
-CURRENT_WORK_EXPERIENCE_ID = 2
+CURRENT_WORK_EXPERIENCE_ID = 3
 
 class Config(object):
     # 分页功能，每页显示的个数
